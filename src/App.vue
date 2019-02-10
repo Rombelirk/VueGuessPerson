@@ -1,28 +1,34 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div class="main">
+        <header-component/>
+        <router-view/>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Header from "./components/Header.vue";
+import { mapActions } from "vuex";
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
+    name: "App",
+    components: {
+        HeaderComponent: Header
+    },
+    methods: {
+        ...mapActions({
+            fetchInitialInfo: "fetchInitialInfo"
+        })
+    },
+    created() {
+        this.fetchInitialInfo();
+    }
+};
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped lang="scss">
+@import "~@/assets/styles/defaults.scss";
+
+.main {
+    width: 100%;
+    height: 100%;
 }
 </style>
