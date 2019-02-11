@@ -8,7 +8,7 @@ router.get("/init", isAuthenticated, (req, res) => {
         res.send({
             code: 0,
             message: "found",
-            user: {login: req.session.login}
+            user: { login: req.session.login }
         });
     } else {
         res.send({
@@ -37,15 +37,16 @@ router.post("/signup", isAuthenticated, (req, res) => {
 })
 
 router.post("/login", (req, res) => {
+    console.log("login")
     const { login, password } = req.body;
-    User.find({ login, password }).then(function (response) {
-
-        if (response.length > 0) {
+    User.find({ login, password }).then(result => {
+        if (result.length > 0) {
             req.session.login = login;
+            req.session.userId = result[0]._id
             res.send({
                 code: 0,
                 message: "found",
-                user: response[0]
+                user: result[0]
             });
         } else {
 

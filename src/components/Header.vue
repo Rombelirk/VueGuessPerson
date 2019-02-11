@@ -1,5 +1,8 @@
 <template>
     <div class="header">
+        <div class="players-online-block">
+            Players online: {{playersOnline}}
+        </div>
         <div class="start-game-block">
             <base-button :click="startGame" v-if="authenticated">Start game</base-button>
         </div>
@@ -21,7 +24,8 @@ export default {
         ...mapState({
             login: state => state.main.user.login,
             authenticated: state => state.main.authenticated,
-            initialDataIsFetching: state => state.main.initialDataIsFetching
+            initialDataIsFetching: state => state.main.initialDataIsFetching,
+            playersOnline: state => state.main.playersOnline
         })
     },
     methods: {
@@ -47,8 +51,13 @@ export default {
     height: 80px;
     background-color: rgb(214, 214, 214);
     justify-content: flex-end;
+    .players-online-block {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
     .start-game-block {
-        
+        width: 200px;
     }
     .auth-block {
         display: flex;

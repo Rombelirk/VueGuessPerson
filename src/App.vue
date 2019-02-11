@@ -7,7 +7,7 @@
 
 <script>
 import Header from "./components/Header.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
     name: "App",
     components: {
@@ -16,10 +16,21 @@ export default {
     methods: {
         ...mapActions({
             fetchInitialInfo: "fetchInitialInfo"
+        }),
+        ...mapMutations({
+            changePlayersCount: "changePlayersCount"
+        })
+    },
+    computed: {
+        ...mapState({
+            playersOnline: state => state.main.playersOnline,
+            socket: state => state.main.socket
         })
     },
     created() {
         this.fetchInitialInfo();
+
+      
     }
 };
 </script>

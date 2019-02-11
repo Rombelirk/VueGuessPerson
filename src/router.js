@@ -1,12 +1,13 @@
 
 import Login from "./components/Login";
+import Game from "./components/Game";
 import VueRouter from "vue-router";
 
 const router = new VueRouter({
     mode: 'history',
     routes: [
         {path: '/login', component: Login} ,
-        // {path: '/', redirect: '/login'},
+        {path: '/', component: Game},
     ] 
     
     

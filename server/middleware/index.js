@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser');
+const router = require("../router");
 const io = require("../socket");
 const {app} = require("../server");
 const session = require("express-session")({
@@ -15,3 +16,5 @@ io.use(sharedsession(session, {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use("/", router);
