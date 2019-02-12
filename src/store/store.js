@@ -8,14 +8,14 @@ Vue.use(Vuex)
 
 const game = {
     state: {
-        game:null
+        game: null
     },
     actions: {
         startGame({ commit }) {
             socket.io.emit("startNewGame")
         },
         sendQuestion({ commit }, question) {
-            socket.io.emit("newQuestion", {question})
+            socket.io.emit("newQuestion", { question })
         }
     },
     mutations: {
@@ -48,8 +48,8 @@ const main = {
                 }
             })
         },
-        setSocketHandlers({commit}) {
-          
+        setSocketHandlers({ commit }) {
+
             socket.io.on("playersCountChanged", data => {
                 console.log(data.io)
                 commit("changePlayersCount", data.playersCount);
@@ -60,7 +60,6 @@ const main = {
             });
 
             socket.io.on("newQuestion", question => {
-                debugger
                 console.log("newQUestio", question)
             })
         },
@@ -86,14 +85,13 @@ const main = {
             state.user = user;
         },
         setAuthenticated(state) {
-            debugger
-                socket.connect()
-          
+            socket.connect()
+
             state.authenticated = true;
         },
-       
+
         changePlayersCount(state, count) {
-        
+
             state.playersOnline = count;
         }
     },
