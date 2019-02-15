@@ -8,7 +8,8 @@ Vue.use(Vuex)
 
 const game = {
     state: {
-        game: null
+        game: null,
+        questions: []
     },
     actions: {
         startGame({ commit }) {
@@ -19,8 +20,11 @@ const game = {
         }
     },
     mutations: {
-        gameStarted(state, game) {
+        setGame(state, game) {
             state.game = game
+        },
+        setQuestions(state, questions) {
+            state.questions = questions;
         }
     },
     getters: {
@@ -56,7 +60,7 @@ const main = {
             });
 
             socket.io.on("gameStarted", data => {
-                commit("gameStarted", data.game);
+                commit("setGame", data.game);
             });
 
             socket.io.on("newQuestion", question => {
@@ -75,6 +79,8 @@ const main = {
                     commit("setUserInfo", res.data.user);
                     commit("setAuthenticated");
                     dispatch("setSocketHandlers");
+                    commit("setGame", res.data.player.currentGame);
+                    commit("setQuestions", res.data.questions);
                 }
             })
         },
@@ -83,6 +89,7 @@ const main = {
     mutations: {
         setUserInfo(state, user) {
             state.user = user;
+
         },
         setAuthenticated(state) {
             socket.connect()

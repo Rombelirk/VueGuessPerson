@@ -4,7 +4,7 @@
             Players online: {{playersOnline}}
         </div>
         <div class="start-game-block">
-            <base-button :click="startGame" v-if="authenticated">Start game</base-button>
+            <base-button :click="startGame" v-if="authenticated && game === null">Start game</base-button>
         </div>
         <div class="auth-block">
             <div v-if="authenticated">{{login}}</div>
@@ -25,7 +25,8 @@ export default {
             login: state => state.main.user.login,
             authenticated: state => state.main.authenticated,
             initialDataIsFetching: state => state.main.initialDataIsFetching,
-            playersOnline: state => state.main.playersOnline
+            playersOnline: state => state.main.playersOnline,
+            game: state => state.game.game
         })
     },
     methods: {

@@ -2,9 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const QuestionSchema = new Schema({ 
-    asker: {
+    game: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Game'
+    },
+    person : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Person'
     },
     text: String, 
     answeredYes: Number, 

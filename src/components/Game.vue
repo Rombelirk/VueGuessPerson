@@ -1,6 +1,5 @@
 <template>
     <div v-if="authenticated" class="game">
-        <div v-if="game !== null">Game started</div>
         <div v-if="game !== null && game.currentQuestion === null">
             <text-input
                 :value="question"
@@ -8,6 +7,21 @@
                 :change="value => question = value"
             />
             <base-button :click="() => sendQuestion(question)">Send question</base-button>
+        </div>
+        <div v-if="game && game.currentQuestion && game.currentQuestion.text" class="current-question">
+            {{game.currentQuestion.text}}
+        </div>
+        <div f-if="questions.length > 0" class="questions">
+            <div :key="index" v-for="(question, index) in questions">
+                <div class="question-text">
+                    {{question.text}}
+                </div>
+                <div v-if="question.person" class="asker">
+                    <div>{{question.person.name}}</div>
+                    <img class="image" :src="question.person.image"/>
+                    
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -26,7 +40,8 @@ export default {
     computed: {
         ...mapState({
             game: state => state.game.game,
-            authenticated: state => state.main.authenticated
+            authenticated: state => state.main.authenticated,
+            questions: state => state.game.questions
         })
     },
     methods: {
