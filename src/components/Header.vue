@@ -10,6 +10,7 @@
             <div v-if="authenticated">{{login}}</div>
             <base-button v-else :click="onLoginClick">Login</base-button>
         </div>
+        <base-button :click="logout" v-if="authenticated">Logout</base-button>
     </div>
 </template>
 
@@ -34,7 +35,8 @@ export default {
             this.$router.push("/login");
         },
         ...mapActions({
-            startGame: 'startGame'
+            startGame: 'startGame',
+            logout: 'logout'
         })
     },
     components: {

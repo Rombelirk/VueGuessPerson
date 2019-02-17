@@ -13,7 +13,7 @@ router.get("/init", isAuthenticated, async (req, res) => {
             populate: [{
                 path: 'currentQuestion',
                 model: 'Question',
-                select: 'text'
+                select: ['text', 'answeredYes', 'answeredNo']
             }]
         });
         let questions;
@@ -26,6 +26,7 @@ router.get("/init", isAuthenticated, async (req, res) => {
             path: 'person',
             model: 'Person'
         });
+
         res.send({
             code: 0,
             message: "found",
@@ -81,6 +82,12 @@ router.post("/login", (req, res) => {
         }
         res.end();
     });
+})
+
+router.get("/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.end()
+    })
 })
 
 module.exports = router;

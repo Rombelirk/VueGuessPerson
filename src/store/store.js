@@ -12,6 +12,9 @@ const game = {
         questions: []
     },
     actions: {
+        answerQuestion({commit}, payload) {
+            socket.io.emit("answerQuestion", payload)
+        },
         startGame({ commit }) {
             socket.io.emit("startNewGame")
         },
@@ -25,6 +28,14 @@ const game = {
         },
         setQuestions(state, questions) {
             state.questions = questions;
+        },
+        setCurrentQuestion(state, question) {
+            if (state.game ) {
+                state.game.currentQuestion = question;
+            }
+        },
+        addNewQuestion(state, question) {
+            state.questions.push(question)
         }
     },
     getters: {
@@ -48,7 +59,8 @@ const main = {
                     commit("setUserInfo", res.data.user);
                     commit("setAuthenticated");
                     dispatch("setSocketHandlers");
-                    router.push("/")
+                    router.push("/"); 
+                    dispatch("fetchInitialInfo");
                 }
             })
         },
@@ -65,7 +77,20 @@ const main = {
 
             socket.io.on("newQuestion", question => {
                 console.log("newQUestio", question)
-            })
+            });
+
+            socket.io.on("questionAccepted", question => {
+                commit("setCurrentQuestion", question)
+            });
+
+            socket.io.on("updateAnswers", question => {
+                commit("setCurrentQuestion", question)
+            });
+            socket.io.on("newQuestionAsked", question => {
+                commit("addNewQuestion", question)
+            });
+          
+            
         },
         ////sd fsdfdf dfgdfg 
         submitSignup({ commit }, { login, password }) {
@@ -81,9 +106,14 @@ const main = {
                     dispatch("setSocketHandlers");
                     commit("setGame", res.data.player.currentGame);
                     commit("setQuestions", res.data.questions);
+                } else if (res.data.message === "Not authenticated") {
+                    commit("setAuthenticated", false);
                 }
             })
         },
+        logout({ dispatch }) {
+            axios.get("/logout").then(() => dispatch("fetchInitialInfo"))
+        }
 
     },
     mutations: {
@@ -91,7 +121,10 @@ const main = {
             state.user = user;
 
         },
-        setAuthenticated(state) {
+        setAuthenticated(state, value) {
+            if (value === false) {
+                return state.authenticated = false;
+            }
             socket.connect()
 
             state.authenticated = true;

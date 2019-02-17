@@ -8,18 +8,27 @@
             />
             <base-button :click="() => sendQuestion(question)">Send question</base-button>
         </div>
-        <div v-if="game && game.currentQuestion && game.currentQuestion.text" class="current-question">
+        <div
+            v-if="game && game.currentQuestion && game.currentQuestion.text"
+            class="current-question"
+        >
             {{game.currentQuestion.text}}
+            <div class="question-answers">
+                <div>Yes: {{game.currentQuestion.answeredYes}}</div>
+                <div>No: {{game.currentQuestion.answeredNo}}</div>
+            </div>
         </div>
         <div f-if="questions.length > 0" class="questions">
-            <div :key="index" v-for="(question, index) in questions">
-                <div class="question-text">
-                    {{question.text}}
-                </div>
+            <div class="question" :key="index" v-for="(question, index) in questions">
+                <div class="question-text">{{question.text}}</div>
+
                 <div v-if="question.person" class="asker">
                     <div>{{question.person.name}}</div>
-                    <img class="image" :src="question.person.image"/>
-                    
+                    <img class="image" :src="question.person.image">
+                </div>
+                <div class="answer">
+                    <base-button :click="()=>answerQuestion({id: question._id, answer: 'yes'})">Yes</base-button>
+                    <base-button :click="()=>answerQuestion({id: question._id, answer: 'no'})">No</base-button>
                 </div>
             </div>
         </div>
@@ -46,7 +55,8 @@ export default {
     },
     methods: {
         ...mapActions({
-            sendQuestion: "sendQuestion"
+            sendQuestion: "sendQuestion",
+            answerQuestion: "answerQuestion"
         })
     },
     components: {
@@ -56,9 +66,23 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .game {
     height: 100%;
     width: 100%;
+
+    .current-question {
+        background-color: gray;
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .questions {
+        .question {
+            margin: 5px;
+            padding: 5px;
+            border: 1px solid gray;
+        }
+    }
 }
 </style>
