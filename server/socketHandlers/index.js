@@ -96,30 +96,41 @@ io.on('connection', socket => {
     });
 
     socket.on("answerQuestion", async answer => {
+        const question = await Question.findById(answer.id);
+        // todo if question is null
+        ++question.answeredTotal;
+
+        const hasUserAlreadyAnsweredThisQuestion = await question.whoAnswered
+            .some(user => user.equals(socket.handshake.session.userId));
+
+        if (hasUserAlreadyAnsweredThisQuestion) {
+            return socket.emit("errorOccurred", "The player has already answered this question.");
+        }
+
         try {
-            const question = await Question.findById(answer.id);
-            ++question.answeredTotal;
-            const hasUserAlreadyAnsweredThisQuestion = await question.whoAnswered.some(user => user.equals(socket.handshake.session.userId));
-            if (hasUserAlreadyAnsweredThisQuestion) {
-                throw new Error("The player has already answered this question.")
-            }
             question.whoAnswered.push(socket.handshake.session.userId);
             if (answer.answer === "yes") {
                 ++question.answeredYes
             } else if (answer.answer === "no") {
                 ++question.answeredNo
             }
+
             await question.save();
 
             const populatedQuestion = await Question.populate(question, { path: "game", select: "user" })
             const askerId = populatedQuestion.game.user;
+
             const sockets = io.sockets.sockets;
+            // todo maybe Object.keys().forEach
             for (let socketId in sockets) {
                 let sock = sockets[socketId];
-                if (sock.handshake.session.userId == askerId) {
+
+                // todo check strict equal
+                if (sock.handshake.session.userId === askerId) {
                     io.to(`${socketId}`).emit('updateAnswers', question);
                 }
             }
+
             const user = await getUser(socket.handshake.session.userId);
             const questions = await getQuestions(user);
 
@@ -128,4 +139,9 @@ io.on('connection', socket => {
             socket.emit("errorOccurred", error.message)
         }
     })
+
+    socket.on("error", error => {
+        console.log("error handling");
+        socket.emit("errorOccurred", error.message);
+    });
 });
