@@ -32,7 +32,7 @@ io.on('connection', socket => {
                 user: socket.handshake.session.userId,
                 currentQuestion: null
             });
-        
+
             const user = await User.findById(socket.handshake.session.userId)
             const savedGame = await newGame.save();
             user.player.currentGame = savedGame._id;
@@ -46,16 +46,17 @@ io.on('connection', socket => {
         }
     });
 
-
     socket.on("newQuestion", async data => {
+        const game = await Game.findOne({ user: socket.handshake.session.userId });
+        if (!game) {
+            return socket.emit("errorOccurred", "The User hasn't start a game yet.");
+        }
+
+        if (game.currentQuestion) {
+            return socket.emit("errorOccurred", "The User already has an open question.");
+        }
+
         try {
-            const game = await Game.findOne({ user: socket.handshake.session.userId });
-            if (!game) {
-                throw new Error("The User hasn't start a game yet.");
-            };
-            if (game.currentQuestion) {
-                throw new Error("The User already has an open question.");
-            }
             const question = new Question({
                 game: game._id,
                 text: data.question,
@@ -66,20 +67,29 @@ io.on('connection', socket => {
                 answeredDontKnow: 0,
                 whoAnswered: []
             });
+
             game.currentQuestion = question._id;
-            await question.save();
-            await game.save();
+
+            // simultaneously
+            await Promise.all([
+                question.save(),
+                game.save()
+            ]);
+
             socket.emit("questionAccepted", {
                 text: question.text,
                 answeredYes: question.answeredYes,
                 answeredNo: question.answeredNo
             });
-            await Question.populate(question, { path: "person" })
+
+            await Question.populate(question, { path: "person" });
+
             socket.broadcast.emit('newQuestionAsked', {
                 _id: question._id,
                 text: question.text,
                 person: question.person
             });
+
         } catch (error) {
             socket.emit("errorOccurred", error.message)
         }
