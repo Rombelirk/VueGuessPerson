@@ -41,7 +41,7 @@ io.on('connection', socket => {
             socket.emit('gameStarted', {
                 game: savedGame
             });
-        } catch (err) {
+        } catch (error) {
             socket.emit("errorOccurred", error.message)
         }
     });
