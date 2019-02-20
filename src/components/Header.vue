@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="players-online-block">
+        <div v-if="authenticated" class="players-online-block">
             Players online: {{playersOnline}}
         </div>
         <div class="start-game-block">

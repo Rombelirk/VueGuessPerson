@@ -1,32 +1,16 @@
 var express = require('express');
 var router = express.Router();
 const { User, PlayerSchema } = require("./models/User");
+const {getQuestions, getUser} = require("./socketHandlers/controllers")
 const isAuthenticated = require("./middleware/isAuthenticated");
 const Player = require("./models/Player");
-const Question = require("./models/Question")
+const Question = require("./models/Question");
+const io = require("./socket")
 
 router.get("/init", isAuthenticated, async (req, res) => {
     if (req.session && req.session.login) {
-        const user = await User.findById(req.session.userId);
-        await User.populate(user, {
-            path: "player.currentGame",
-            populate: [{
-                path: 'currentQuestion',
-                model: 'Question',
-                select: ['text', 'answeredYes', 'answeredNo']
-            }]
-        });
-        let questions;
-        if (user.player && user.player.currentGame && user.player.currentGame._id) {
-            questions = await Question.find({}).where("game").ne(user.player.currentGame._id);
-        } else {
-            questions = await Question.find({});
-        }
-        await Question.populate(questions, {
-            path: 'person',
-            model: 'Person'
-        });
-
+        const user = await getUser(req.session.userId);
+        const questions = await getQuestions(user);
         res.send({
             code: 0,
             message: "found",
@@ -45,7 +29,7 @@ router.get("/init", isAuthenticated, async (req, res) => {
 router.post("/signup", (req, res) => {
     User.find({ username: req.body.login }).then(function (response) {
         if (response.length > 0) {
-            res.send("Пользователь с таким именем уже существует");
+            res.send("User with such name already exists");
             res.end();
         } else {
             const newPlayer = new Player({});
@@ -63,7 +47,6 @@ router.post("/signup", (req, res) => {
 })
 
 router.post("/login", (req, res) => {
-    console.log("login")
     const { login, password } = req.body;
     User.find({ login, password }).then(result => {
         if (result.length > 0) {
@@ -77,7 +60,7 @@ router.post("/login", (req, res) => {
         } else {
             res.send({
                 code: 1,
-                message: "Неверное имя пользователя или пароль"
+                message: "Invalid username or password"
             });
         }
         res.end();
@@ -85,6 +68,13 @@ router.post("/login", (req, res) => {
 })
 
 router.get("/logout", (req, res) => {
+    const sockets = io.sockets.sockets;
+    for (let socketId in sockets) {
+        let sock = sockets[socketId];
+        if (sock.handshake.session.userId == req.session.userId) {
+            sock.emit('disconnect');
+        }
+    }
     req.session.destroy(() => {
         res.end()
     })

@@ -82,6 +82,16 @@ export default {
             margin: 5px;
             padding: 5px;
             border: 1px solid gray;
+            img {
+                max-height: 140px;
+            }
+            .answer {
+                display: flex;
+                & > * {
+                    margin: 5px;
+                    width: 80px;
+                }
+            }
         }
     }
 }

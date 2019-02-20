@@ -9,5 +9,4 @@ const PlayerSchema = new Schema({
 })
 
 const Player = mongoose.model('Player', PlayerSchema);
-
 module.exports = Player;

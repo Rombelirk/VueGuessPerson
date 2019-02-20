@@ -1,4 +1,3 @@
-
 import Vuex from "vuex"
 import Vue from 'vue'
 import axios from "axios";
@@ -6,13 +5,15 @@ import router from "../router"
 import socket from "../socket"
 Vue.use(Vuex)
 
+window.socket = socket
+
 const game = {
     state: {
         game: null,
         questions: []
     },
     actions: {
-        answerQuestion({commit}, payload) {
+        answerQuestion({ commit }, payload) {
             socket.io.emit("answerQuestion", payload)
         },
         startGame({ commit }) {
@@ -30,7 +31,7 @@ const game = {
             state.questions = questions;
         },
         setCurrentQuestion(state, question) {
-            if (state.game ) {
+            if (state.game) {
                 state.game.currentQuestion = question;
             }
         },
@@ -59,43 +60,34 @@ const main = {
                     commit("setUserInfo", res.data.user);
                     commit("setAuthenticated");
                     dispatch("setSocketHandlers");
-                    router.push("/"); 
+                    router.push("/");
                     dispatch("fetchInitialInfo");
                 }
             })
         },
         setSocketHandlers({ commit }) {
-
             socket.io.on("playersCountChanged", data => {
-                console.log(data.io)
                 commit("changePlayersCount", data.playersCount);
             });
-
             socket.io.on("gameStarted", data => {
                 commit("setGame", data.game);
             });
-
-            socket.io.on("newQuestion", question => {
-                console.log("newQUestio", question)
-            });
-
             socket.io.on("questionAccepted", question => {
                 commit("setCurrentQuestion", question)
             });
-
             socket.io.on("updateAnswers", question => {
                 commit("setCurrentQuestion", question)
             });
             socket.io.on("newQuestionAsked", question => {
                 commit("addNewQuestion", question)
             });
-          
-            
+            socket.io.on("newQuestions", questions => {
+                commit("setQuestions", questions);
+            })
         },
-        ////sd fsdfdf dfgdfg 
+  
         submitSignup({ commit }, { login, password }) {
             axios.post("/signup", { login, password }).then(res => {
-                console.log(res);
             })
         },
         fetchInitialInfo({ commit, dispatch }) {
@@ -112,26 +104,26 @@ const main = {
             })
         },
         logout({ dispatch }) {
-            axios.get("/logout").then(() => dispatch("fetchInitialInfo"))
+            axios.get("/logout").then(() => { 
+                socket.disconnect();
+                dispatch("fetchInitialInfo");
+            })
         }
 
     },
     mutations: {
         setUserInfo(state, user) {
             state.user = user;
-
         },
         setAuthenticated(state, value) {
             if (value === false) {
                 return state.authenticated = false;
             }
             socket.connect()
-
             state.authenticated = true;
         },
 
         changePlayersCount(state, count) {
-
             state.playersOnline = count;
         }
     },
