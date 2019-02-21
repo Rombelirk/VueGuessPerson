@@ -1,30 +1,31 @@
 var express = require('express');
 var router = express.Router();
-const { User, PlayerSchema } = require("./models/User");
-const {getQuestions, getUser} = require("./socketHandlers/controllers")
+const { User } = require("./models/User");
+const {getQuestions, getUser} = require("./socketHandlers/controllers");
 const isAuthenticated = require("./middleware/isAuthenticated");
 const Player = require("./models/Player");
-const Question = require("./models/Question");
-const io = require("./socket")
+const io = require("./socket");
 
 router.get("/init", isAuthenticated, async (req, res) => {
     if (req.session && req.session.login) {
+
         const user = await getUser(req.session.userId);
         const questions = await getQuestions(user);
-        res.send({
+
+        return res.send({
             code: 0,
             message: "found",
             user: { login: req.session.login },
             player: user.player,
             questions
         });
-    } else {
-        res.send({
-            code: 1,
-            message: "Unauthenticated"
-        })
     }
-})
+
+    return res.send({
+        code: 1,
+        message: "Unauthenticated"
+    })
+});
 
 router.post("/signup", (req, res) => {
     User.find({ username: req.body.login }).then(function (response) {
