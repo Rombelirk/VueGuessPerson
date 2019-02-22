@@ -4,13 +4,13 @@ services:
     container_name: mongo
     image: mongo
     restart: always
-    ports: 
-      - "27017:27017"  
-    volumes:  
+    ports:
+      - "27017:27017"
+    volumes:
       - ./data/db:/data/db
     networks:
       - backend
-     
+
   web:
     build: .
     depends_on:
@@ -25,7 +25,7 @@ services:
     # command: nodemon
     restart: always
     networks:
-      - backend  
+      - backend
   nginx:
     image: nginx
     volumes:
@@ -33,6 +33,6 @@ services:
         - ./dist:/usr/share/nginx/html:z
     ports:
       - "80:80"
-    
+
 networks:
-  backend:      
+  backend:
