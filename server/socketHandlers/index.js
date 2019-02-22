@@ -97,16 +97,16 @@ io.on('connection', socket => {
 
     socket.on("answerQuestion", async answer => {
         const question = await Question.findById(answer.id);
-        // todo if question is null
-        ++question.answeredTotal;
-
+        if (!question) {
+            return socket.emit("errorOccurred", "No question found.");
+        }
         const hasUserAlreadyAnsweredThisQuestion = await question.whoAnswered
             .some(user => user.equals(socket.handshake.session.userId));
 
         if (hasUserAlreadyAnsweredThisQuestion) {
             return socket.emit("errorOccurred", "The player has already answered this question.");
         }
-
+        ++question.answeredTotal;
         try {
             question.whoAnswered.push(socket.handshake.session.userId);
             if (answer.answer === "yes") {
@@ -119,18 +119,15 @@ io.on('connection', socket => {
 
             const populatedQuestion = await Question.populate(question, { path: "game", select: "user" })
             const askerId = populatedQuestion.game.user;
-
             const sockets = io.sockets.sockets;
-            // todo maybe Object.keys().forEach
-            for (let socketId in sockets) {
+        
+            Object.keys(sockets).forEach(socketId => {
                 let sock = sockets[socketId];
-
-                // todo check strict equal
-                if (sock.handshake.session.userId === askerId) {
+                if (askerId.equals(sock.handshake.session.userId)) {
                     io.to(`${socketId}`).emit('updateAnswers', question);
                 }
-            }
-
+            })
+            
             const user = await getUser(socket.handshake.session.userId);
             const questions = await getQuestions(user);
 

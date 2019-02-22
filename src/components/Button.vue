@@ -18,9 +18,9 @@ export default {
 
 <style>
 .button {
-    background-color: green;
+    background-color: rgb(143, 167, 204);
     color: white;
-    padding: 10px;
+    padding: 10px 20px;
     cursor: pointer;
     display: flex;
     width: auto;

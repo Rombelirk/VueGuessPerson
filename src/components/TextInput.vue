@@ -31,5 +31,6 @@ export default {
 .text-input {
     border: 1px solid gray;
     border-radius: 3px;
+    height: 20px;
 }
 </style>

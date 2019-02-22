@@ -12,10 +12,17 @@
             v-if="game && game.currentQuestion && game.currentQuestion.text"
             class="current-question"
         >
+            <div class="title">Your current question</div>
             {{game.currentQuestion.text}}
-            <div class="question-answers">
-                <div>Yes: {{game.currentQuestion.answeredYes}}</div>
-                <div>No: {{game.currentQuestion.answeredNo}}</div>
+            <div class="answers">
+                <div
+                    :style="{flex: game.currentQuestion.answeredYes || 1}"
+                    class="answer yes"
+                >Yes: {{game.currentQuestion.answeredYes}}</div>
+                <div
+                    :style="{flex: game.currentQuestion.answeredNo || 1}"
+                    class="answer no"
+                >No: {{game.currentQuestion.answeredNo}}</div>
             </div>
         </div>
         <div f-if="questions.length > 0" class="questions">
@@ -69,27 +76,62 @@ export default {
 <style lang="scss">
 .game {
     height: 100%;
-    width: 100%;
+    /* width: 100%; */
 
     .current-question {
-        background-color: gray;
+        box-shadow: 1px 1px 6px #949494;
+        background-color: #e0e0e0;
+        border-radius: 5px;
         margin: 10px;
         padding: 10px;
+        /* width: 100%; */
+        .title {
+            font-size: 1.4em;
+            color: #616161;
+        }
+        .answers {
+            display: flex;
+            border-radius: 3px;
+            overflow: hidden;
+            width: 100%;
+            .answer {
+                padding-left: 5px;
+                color: white;
+            }
+            .yes {
+                background-color: #8bc34a;
+            }
+            .no {
+                background-color: #f44336;
+            }
+        }
     }
 
     .questions {
+         margin: 10px;
+         display: flex;
+         align-items: flex-end;
+         flex-direction: column;
         .question {
-            margin: 5px;
+            
+            display: flex;
+            flex-direction: column;
+            margin: 10px 0;
             padding: 5px;
-            border: 1px solid gray;
+            width: 200px;
+            box-shadow: 1px 1px 6px #949494;
+            background-color: #e0e0e0;
+            justify-content: center;
+            align-items: center;
             img {
                 max-height: 140px;
+                border-radius: 5px;
             }
             .answer {
                 display: flex;
                 & > * {
                     margin: 5px;
-                    width: 80px;
+                  
                 }
             }
         }

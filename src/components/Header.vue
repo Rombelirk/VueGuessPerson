@@ -9,8 +9,9 @@
         <div class="auth-block">
             <div v-if="authenticated">{{login}}</div>
             <base-button v-else :click="onLoginClick">Login</base-button>
+             <base-button :click="logout" v-if="authenticated">Logout</base-button>
         </div>
-        <base-button :click="logout" v-if="authenticated">Logout</base-button>
+       
     </div>
 </template>
 
@@ -52,7 +53,7 @@ export default {
     align-items: center;
     width: 100%;
     height: 80px;
-    background-color: rgb(214, 214, 214);
+    background-color: #929a9c;
     justify-content: flex-end;
     .players-online-block {
         width: 100%;
@@ -64,6 +65,7 @@ export default {
     }
     .auth-block {
         display: flex;
+        margin-right: 30px;
     }
 }
 </style>
