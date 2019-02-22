@@ -7,7 +7,7 @@ class Socket {
     connect() {
         if (this.io === null) {
             this.io = io('http://localhost:3000')
-        };
+        }
     }
 
     disconnect() {
