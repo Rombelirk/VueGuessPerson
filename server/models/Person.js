@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 
@@ -17,4 +17,4 @@ PersonSchema.statics.random = async function () {
 
 
 const Person = mongoose.model('Person', PersonSchema);
-module.exports = Person;
+export default Person;

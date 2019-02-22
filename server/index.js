@@ -1,6 +1,6 @@
-require("./mongo");
-require("./middleware");
-require("./socketHandlers");
+import "./mongo";
+import "./middleware";
+import "./socketHandlers";
 
 
 

@@ -1,5 +1,6 @@
-const { server } = require("./server");
+import { server } from "./server";
+import socketIo from "socket.io";
 
-const io = require('socket.io')(server);
+const io = socketIo(server);
 
-module.exports = io;
+export default io;

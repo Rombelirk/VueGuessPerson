@@ -1,10 +1,11 @@
-var express = require('express');
-var router = express.Router();
-const { User } = require("./models/User");
-const {getQuestions, getUser} = require("./socketHandlers/controllers");
-const isAuthenticated = require("./middleware/isAuthenticated");
-const Player = require("./models/Player");
-const io = require("./socket");
+import express from 'express';
+import { User } from "./models/User";
+import { getQuestions, getUser } from "./socketHandlers/controllers";
+import isAuthenticated from "./middleware/isAuthenticated";
+import Player from "./models/Player";
+import io from "./socket";
+
+const router = express.Router();
 
 router.get("/init", isAuthenticated, async (req, res) => {
     if (req.session && req.session.login) {
@@ -81,4 +82,4 @@ router.get("/logout", (req, res) => {
     })
 })
 
-module.exports = router;
+export default router;

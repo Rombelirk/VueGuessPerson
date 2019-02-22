@@ -1,8 +1,8 @@
 
-const { User } = require("../models/User");
-const Question = require("../models/Question");
+import { User } from "../models/User";
+import Question from "../models/Question";
 
-const getQuestions = async user => {
+export const getQuestions = async user => {
     let questions;
     if (user.player && user.player.currentGame && user.player.currentGame._id) {
         questions = await Question.find({ whoAnswered: { $nin: [user._id] } }).where("game").ne(user.player.currentGame._id);
@@ -16,7 +16,7 @@ const getQuestions = async user => {
     return questions;
 }
 
-const getUser = async userId => {
+export const getUser = async userId => {
     const user = await User.findById(userId);
     await User.populate(user, {
         path: "player.currentGame",
@@ -29,7 +29,4 @@ const getUser = async userId => {
     return user;
 }
 
-module.exports = {
-    getQuestions,
-    getUser
-}
+

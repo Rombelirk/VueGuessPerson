@@ -1,10 +1,9 @@
-const io = require("../socket");
-const guessPerson = require("../index");
-const Game = require("../models/Game");
-const Person = require("../models/Person");
-const Question = require("../models/Question");
-const { User } = require("../models/User");
-const { getUser, getQuestions } = require("./controllers");
+import io from "../socket";
+import Game from "../models/Game";
+import Person from "../models/Person";
+import Question from "../models/Question";
+import { User } from "../models/User";
+import { getUser, getQuestions } from "./controllers";
 
 io.on('connection', socket => {
 

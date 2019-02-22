@@ -1,14 +1,15 @@
-const bodyParser = require('body-parser');
-const router = require("../router");
-const io = require("../socket");
-const {app} = require("../server");
+import bodyParser from 'body-parser';
+import router from "../router";
+import io from "../socket";
+import { app } from "../server";
+import sharedsession from "express-socket.io-session";
+import expressSession from "express-session"
 
-const session = require("express-session")({
+const session = expressSession({
     secret: "my-secret",
     resave: true,
     saveUninitialized: true
 });
-const sharedsession = require("express-socket.io-session");
 
 app.use(session);
 io.use(sharedsession(session, {
