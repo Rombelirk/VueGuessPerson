@@ -43,8 +43,8 @@ export default {
 .current-question {
     grid-area: game;
     box-shadow: 1px 1px 6px #949494;
-    background-color: #e0e0e0;
     border-radius: 5px;
+    background-color: #e0e0e0;
     margin: 10px;
     padding: 10px;
     justify-items: center;

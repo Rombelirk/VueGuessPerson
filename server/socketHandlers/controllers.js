@@ -20,11 +20,17 @@ export const getUser = async userId => {
     const user = await User.findById(userId);
     await User.populate(user, {
         path: "player.currentGame",
-        populate: [{
-            path: 'currentQuestion',
-            model: 'Question',
-            select: ['text', 'answeredYes', 'answeredNo']
-        }]
+        populate: [
+            {
+                path: 'currentQuestion',
+                model: 'Question',
+                select: ['text', 'answeredYes', 'answeredNo']
+            }, {
+                path: "history",
+                model: "Question",
+                select: ['text', 'answeredYes', 'answeredNo']
+            }
+        ]
     });
     return user;
 }

@@ -119,14 +119,14 @@ io.on('connection', socket => {
             const populatedQuestion = await Question.populate(question, { path: "game", select: "user" })
             const askerId = populatedQuestion.game.user;
             const sockets = io.sockets.sockets;
-        
+
             Object.keys(sockets).forEach(socketId => {
                 let sock = sockets[socketId];
                 if (askerId.equals(sock.handshake.session.userId)) {
                     io.to(`${socketId}`).emit('updateAnswers', question);
                 }
             })
-            
+
             const user = await getUser(socket.handshake.session.userId);
             const questions = await getQuestions(user);
 
@@ -137,12 +137,21 @@ io.on('connection', socket => {
     });
 
     socket.on("closeQuestion", async gameId => {
-        const game = await Game.findById(gameId);
-        if (game.currentQuestion) {
-            game.history.push(game.currentQuestion);
-            game.currentQuestion = null;
+        //todo: Rewrite this!!!
+        try {
+            const game = await Game.findById(gameId);
+            console.log(game.currentQuestion)
+            if (game.currentQuestion) {
+                game.history.push(game.currentQuestion);
+                game.currentQuestion = null;
+            }
+            await game.save();
+            const populatedGame = await Game.findById(gameId).populate('history')
+            socket.emit("updateGame", populatedGame);
+        } catch (error) {
+            socket.emit("errorOccurred", error.message)
         }
-        game.save();
+
     })
 
     socket.on("error", error => {

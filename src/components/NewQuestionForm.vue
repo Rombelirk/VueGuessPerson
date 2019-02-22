@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="new-question">
         <text-input
             :value="question"
             :title="'Enter your question:'"
@@ -33,5 +33,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.new-question {
+    margin: 10px;
+}
 @import "~@/assets/styles/variables.scss";
 </style>

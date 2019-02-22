@@ -3,6 +3,7 @@
         <new-question-form v-if="game !== null && game.currentQuestion === null"/>
         <current-question/>
         <others-questions/>
+        <questions-history/>
     </div>
 </template>
 
@@ -12,6 +13,7 @@ import Button from "./Button";
 import OthersQuestions from "./OthersQuestions";
 import CurrentQuestion from "./CurrentQuestion";
 import NewQuestionForm from "./NewQuestionForm";
+import QuestionsHistory from "./QuestionsHistory";
 export default {
     name: "Game",
     computed: {
@@ -29,7 +31,8 @@ export default {
         BaseButton: Button,
         OthersQuestions,
         CurrentQuestion,
-        NewQuestionForm
+        NewQuestionForm,
+        QuestionsHistory
     }
 };
 </script>
@@ -39,10 +42,11 @@ export default {
 .game {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 100px 500px;
     grid-template-rows: auto;
     grid-template-areas:
         "game game others-questions"
-        ". . others-questions"
+        "history . others-questions"
         ". . others-questions";
 }
 </style>

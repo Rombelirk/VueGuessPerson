@@ -23,7 +23,7 @@ const game = {
             socket.io.emit("newQuestion", { question })
         },
         closeQuestion({commit}, gameId) {
-            socket.io.emit("closeQuestion", { gameId })
+            socket.io.emit("closeQuestion", gameId)
         }
     },
     mutations: {
@@ -86,6 +86,9 @@ const main = {
             });
             socket.io.on("newQuestions", questions => {
                 commit("setQuestions", questions);
+            });
+            socket.io.on("updateGame", game => {
+                commit("setGame", game);
             })
         },
   
