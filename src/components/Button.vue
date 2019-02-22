@@ -16,7 +16,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped lang="scss">
 .button {
     background-color: rgb(143, 167, 204);
     color: white;

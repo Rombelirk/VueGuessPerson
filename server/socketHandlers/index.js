@@ -135,6 +135,15 @@ io.on('connection', socket => {
         } catch (error) {
             socket.emit("errorOccurred", error.message)
         }
+    });
+
+    socket.on("closeQuestion", async gameId => {
+        const game = await Game.findById(gameId);
+        if (game.currentQuestion) {
+            game.history.push(game.currentQuestion);
+            game.currentQuestion = null;
+        }
+        game.save();
     })
 
     socket.on("error", error => {

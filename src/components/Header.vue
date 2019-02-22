@@ -1,17 +1,16 @@
 <template>
     <div class="header">
-        <div v-if="authenticated" class="players-online-block">
-            Players online: {{playersOnline}}
-        </div>
+        <div v-if="authenticated" class="players-online-block">Players online: {{playersOnline}}</div>
         <div class="start-game-block">
             <base-button :click="startGame" v-if="authenticated && game === null">Start game</base-button>
         </div>
+        <div v-if="authenticated">{{login}}</div>
         <div class="auth-block">
-            <div v-if="authenticated">{{login}}</div>
-            <base-button v-else :click="onLoginClick">Login</base-button>
-             <base-button :click="logout" v-if="authenticated">Logout</base-button>
+            <base-button v-if="!authenticated" :click="onLoginClick">Login</base-button>
+            <transparent-button :click="logout" v-if="authenticated" :text="'Sign Out'">
+                <font-awesome-icon icon="sign-out-alt"></font-awesome-icon>
+            </transparent-button>
         </div>
-       
     </div>
 </template>
 
@@ -19,6 +18,7 @@
 import Login from "./Login.vue";
 import { mapState, mapActions } from "vuex";
 import Button from "./Button";
+import TransparentButton from "./TransparentButton";
 
 export default {
     name: "Header",
@@ -36,27 +36,30 @@ export default {
             this.$router.push("/login");
         },
         ...mapActions({
-            startGame: 'startGame',
-            logout: 'logout'
+            startGame: "startGame",
+            logout: "logout"
         })
     },
     components: {
         Login,
-        BaseButton: Button
+        BaseButton: Button,
+        TransparentButton
     }
 };
 </script>
 
 <style scoped lang="scss">
+@import "~@/assets/styles/variables.scss";
 .header {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr;
     width: 100%;
     height: 80px;
-    background-color: #929a9c;
-    justify-content: flex-end;
+    background-color: $main-theme-color;
+    align-items: center;
+
     .players-online-block {
-        width: 100%;
+        width: auto;
         display: flex;
         justify-content: center;
     }

@@ -21,6 +21,9 @@ const game = {
         },
         sendQuestion({ commit }, question) {
             socket.io.emit("newQuestion", { question })
+        },
+        closeQuestion({commit}, gameId) {
+            socket.io.emit("closeQuestion", { gameId })
         }
     },
     mutations: {
