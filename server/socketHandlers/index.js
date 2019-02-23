@@ -22,7 +22,7 @@ io.on('connection', socket => {
         try {
             const game = await Game.findOne({ user: socket.handshake.session.userId });
             if (game) {
-                throw new Error("This User already have an open game!")
+                throw new Error("This user already has an open game!")
             }
 
             const person = await Person.random()
@@ -60,6 +60,7 @@ io.on('connection', socket => {
                 game: game._id,
                 text: data.question,
                 person: game.person,
+                closed: false,
                 answeredYes: 0,
                 answeredNo: 0,
                 answeredTotal: 0,
@@ -137,11 +138,14 @@ io.on('connection', socket => {
     });
 
     socket.on("closeQuestion", async gameId => {
-        //todo: Rewrite this!!!
+        //todo: Rewrite this, duplicated game query
         try {
             const game = await Game.findById(gameId);
-            console.log(game.currentQuestion)
+
             if (game.currentQuestion) {
+                const question = await Question.findById(game.currentQuestion);
+                question.closed = true;
+                await question.save();
                 game.history.push(game.currentQuestion);
                 game.currentQuestion = null;
             }
@@ -152,10 +156,48 @@ io.on('connection', socket => {
             socket.emit("errorOccurred", error.message)
         }
 
+    });
+
+    socket.on("changeFinalAnswer", async value => {
+        try {
+            const suggestedPersons = await Person.find({
+                "name": {
+                    "$regex": value,
+                    '$options': 'i'
+                }
+            });
+            socket.emit("suggestedPersons", suggestedPersons)
+        } catch (error) {
+            socket.emit("errorOccurred", error.message)
+        }
+    });
+
+    socket.on("sendFinalAnswer", async personId => {
+        try {
+            const user = await getUser(socket.handshake.session.userId);
+            if (!(user && user.player && user.player.currentGame)) {
+                return socket.emit("errorOccurred", "User not found or doesn't have current game")
+            }
+            if (user.player.currentGame.person.equals(personId)) {
+                // todo: find out how to rebuild db structure to avoid this multiple nulling
+                const game = await Game.findOne({ user: socket.handshake.session.userId });
+                game.user = null;
+                game.save();
+                user.player.currentGame = null;
+                await user.save();
+                socket.emit("finalAnswerCorrect");
+            } else {
+                socket.emit("finalAnswerIncorrect");
+            }
+        } catch (error) {
+            socket.emit("errorOccurred", error.message)
+        }
+
+
+
     })
 
     socket.on("error", error => {
-        console.log("error handling");
         socket.emit("errorOccurred", error.message);
     });
 });

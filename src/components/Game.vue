@@ -4,6 +4,7 @@
         <current-question/>
         <others-questions/>
         <questions-history/>
+        <final-answer v-if="game !== null"/>
     </div>
 </template>
 
@@ -14,6 +15,8 @@ import OthersQuestions from "./OthersQuestions";
 import CurrentQuestion from "./CurrentQuestion";
 import NewQuestionForm from "./NewQuestionForm";
 import QuestionsHistory from "./QuestionsHistory";
+import FinalAnswer from "./FinalAnswer";
+
 export default {
     name: "Game",
     computed: {
@@ -32,7 +35,8 @@ export default {
         OthersQuestions,
         CurrentQuestion,
         NewQuestionForm,
-        QuestionsHistory
+        QuestionsHistory,
+        FinalAnswer
     }
 };
 </script>
@@ -40,13 +44,13 @@ export default {
 <style scoped lang="scss">
 @import "~@/assets/styles/variables.scss";
 .game {
+
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 100px 500px;
-    grid-template-rows: auto;
+    grid-template-rows: 200px 500px 100px;
     grid-template-areas:
         "game game others-questions"
-        "history . others-questions"
-        ". . others-questions";
+        "history history others-questions"
+        "final-answer final-answer others-questions";
 }
 </style>

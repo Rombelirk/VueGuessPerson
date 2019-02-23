@@ -1,5 +1,8 @@
 <template>
-    <input type="text" class="text-input" :value="value" @input="onTextInput">
+    <input type="text" 
+    class="text-input" 
+    :value="value" 
+    @input="onTextInput">
 </template>
 
 <script>

@@ -1,20 +1,34 @@
 <template>
-    <div v-if="history && history.length && history.length !== 0" class="history">
-        <div :key="index" v-for="(question, index) in history" class="question">
+    <div class="history">
+        <div class="title">
+            History of closed questions.
+        </div>
+        <div :key="index" v-for="(question, index) in historyWithFlexValues" class="question">
             <div class="text">{{question.text}}</div>
-            <div class="answered-yes">{{question.answeredYes}}</div>
-            <div class="answered-no">{{question.answeredNo}}</div>
+            <div class="answers">
+                <div
+                    :style="`flex: ${question.flexYes}`"
+                    class="answered-yes"
+                >Yes: {{question.answeredYes}}</div>
+                <div
+                    :style="`flex: ${question.flexNo}`"
+                    class="answered-no"
+                >No: {{question.answeredNo}}</div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
     name: "QuestionsHistory",
     computed: {
         ...mapState({
             history: state => state.game.game && state.game.game.history
+        }),
+        ...mapGetters({
+            historyWithFlexValues: "historyWithFlexValues"
         })
     }
 };
@@ -23,26 +37,45 @@ export default {
 <style scoped lang="scss">
 @import "~@/assets/styles/variables.scss";
 .history {
-    margin: 10px;
+    padding: $base-gutter;
+    margin: $base-gutter;
     grid-area: history;
-    box-shadow: 1px 1px 6px #949494;
-    border-radius: 5px;
-    display: grid;
-    /* grid-template-columns: 1fr 1fr 1fr; */
-    grid-template-rows: 100px;
+    background-color: $block-background-color;
+    box-shadow: $box-shadow;
+    border-radius: $border-radius;
+    display: flex;
+    flex-direction: column;
+    .title {
+        font-size: 1.4em;
+        color: #616161;
+    }
     .question {
-        display: grid;
-        grid-template-areas:
-        "text text"
-        "yes no";
+        display: flex;
+        width: auto;
+        flex-direction: column;
+
         .text {
             grid-area: text;
         }
-        .answered-yes {
-            grid-area: yes;
-        }
-        .answered-no {
-            grid-area: no;
+        .answers {
+            display: flex;
+            width: auto;
+            border-radius: $border-radius;
+            overflow: hidden;
+
+            .answered-yes {
+                padding: 0 5px;
+                min-width: fit-content;
+                background-color: $yes-color;
+                grid-area: yes;
+            }
+            .answered-no {
+                padding: 0 5px;
+                min-width: fit-content;
+                grid-area: no;
+                background-color: $no-color;
+                color: white;
+            }
         }
     }
 }

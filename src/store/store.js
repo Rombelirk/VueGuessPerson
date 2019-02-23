@@ -10,7 +10,8 @@ window.socket = socket
 const game = {
     state: {
         game: null,
-        questions: []
+        questions: [],
+        suggestions: []
     },
     actions: {
         answerQuestion({ commit }, payload) {
@@ -22,8 +23,14 @@ const game = {
         sendQuestion({ commit }, question) {
             socket.io.emit("newQuestion", { question })
         },
-        closeQuestion({commit}, gameId) {
+        closeQuestion({ commit }, gameId) {
             socket.io.emit("closeQuestion", gameId)
+        },
+        onFinalAnswerChange({ commit }, value) {
+            socket.io.emit("changeFinalAnswer", value)
+        },
+        sendFinalAnswer({ commit }, personId) {
+            socket.io.emit("sendFinalAnswer", personId)
         }
     },
     mutations: {
@@ -40,10 +47,39 @@ const game = {
         },
         addNewQuestion(state, question) {
             state.questions.push(question)
+        },
+        setSuggestions(state, suggestions) {
+            console.log(suggestions)
+            if (suggestions) state.suggestions = suggestions
         }
     },
     getters: {
+        slicedQuestions(state) {
+            if (state.questions.length < 4) {
+                return state.questions;
+            }
+            return state.questions.slice(0, 3)
+        },
+        historyWithFlexValues(state) {
+            if (state.game && state.game.history) {
+                return state.game.history.map(question => {
+                    if (question.answeredYes + question.answeredNo === 0) {
+                        return {
+                            ...question,
+                            flexYes: 1,
+                            flexNo: 1
+                        }
+                    }
 
+                    return {
+                        ...question,
+                        flexYes: question.answeredYes,
+                        flexNo: question.answeredNo
+                    }
+                })
+            }
+            return [];
+        }
     }
 }
 
@@ -89,9 +125,19 @@ const main = {
             });
             socket.io.on("updateGame", game => {
                 commit("setGame", game);
+            });
+            socket.io.on("suggestedPersons", suggestions => {
+                commit("setSuggestions", suggestions)
+            });
+            socket.io.on("finalAnswerCorrect", () => {
+                alert("Correct!");
+                commit("setGame", null);
+            })
+            socket.io.on("finalAnswerIncorrect", () => {
+                alert("Nope, try again.")
             })
         },
-  
+
         submitSignup({ commit }, { login, password }) {
             axios.post("/signup", { login, password }).then(res => {
             })
@@ -110,7 +156,7 @@ const main = {
             })
         },
         logout({ dispatch }) {
-            axios.get("/logout").then(() => { 
+            axios.get("/logout").then(() => {
                 socket.disconnect();
                 dispatch("fetchInitialInfo");
             })

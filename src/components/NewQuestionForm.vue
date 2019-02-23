@@ -1,5 +1,8 @@
 <template>
     <div class="new-question">
+        <div class="title">
+            Ask a general question about your character. Other players will naswer it.
+        </div>
         <text-input
             :value="question"
             :title="'Enter your question:'"
@@ -33,8 +36,21 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "~@/assets/styles/variables.scss";
 .new-question {
-    margin: 10px;
+    background-color: $block-background-color;
+    box-shadow: $box-shadow;
+    border-radius: $border-radius;
+    grid-area: game;
+    margin: $base-gutter;
+    padding: $base-gutter;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    .title {
+        font-size: 1.4em;
+        color: #616161;
+    }
 }
 @import "~@/assets/styles/variables.scss";
 </style>
