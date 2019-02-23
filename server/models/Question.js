@@ -10,6 +10,7 @@ const QuestionSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Person'
     },
+    closed: Boolean,
     text: String, 
     answeredYes: Number, 
     answeredNo: Number, 

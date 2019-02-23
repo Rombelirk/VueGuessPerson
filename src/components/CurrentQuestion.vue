@@ -4,13 +4,10 @@
         {{game.currentQuestion.text}}
         <div class="answers">
             <div
-                :style="{flex: game.currentQuestion.answeredYes || 1}"
+                :style="{flex: flex.yes}"
                 class="answer yes"
             >Yes: {{game.currentQuestion.answeredYes}}</div>
-            <div
-                :style="{flex: game.currentQuestion.answeredNo || 1}"
-                class="answer no"
-            >No: {{game.currentQuestion.answeredNo}}</div>
+            <div :style="{flex: flex.no}" class="answer no">No: {{game.currentQuestion.answeredNo}}</div>
         </div>
         <base-button :click="()=>closeQuestion(game._id)">Close question</base-button>
     </div>
@@ -25,7 +22,24 @@ export default {
         ...mapState({
             game: state => state.game.game
             // authenticated: state => state.main.authenticated
-        })
+        }),
+        flex() {
+            
+            if (
+                this.game.currentQuestion.answeredYes + this.game.currentQuestion.answeredNo === 0
+            ) {
+                return {
+                    yes: 1,
+                    no: 1
+                };
+            }
+            return {
+                yes: this.game.currentQuestion.answeredYes,
+                no: this.game.currentQuestion.answeredNo
+            };
+        },
+
+        flexNo() {}
     },
     methods: {
         ...mapActions({
@@ -44,8 +58,8 @@ export default {
     grid-area: game;
     box-shadow: 1px 1px 6px #949494;
     border-radius: 5px;
-    background-color: #e0e0e0;
-    margin: 10px;
+    background-color: $block-background-color;
+    margin: $base-gutter;
     padding: 10px;
     justify-items: center;
     width: auto;
@@ -59,16 +73,19 @@ export default {
         border-radius: 3px;
         overflow: hidden;
         width: 100%;
+        height: 40px;
         margin-bottom: 10px;
         .answer {
             padding-left: 5px;
             color: white;
+            min-width: fit-content;
+            padding: 0 5px;
         }
         .yes {
-            background-color: #8bc34a;
+            background-color: $yes-color;
         }
         .no {
-            background-color: #f44336;
+            background-color: $no-color;
         }
     }
 }
