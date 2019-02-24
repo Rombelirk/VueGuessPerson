@@ -3,7 +3,7 @@
         <new-question-form v-if="game !== null && game.currentQuestion === null"/>
         <current-question/>
         <others-questions/>
-        <questions-history/>
+        <questions-history v-if="game !== null"/>
         <final-answer v-if="game !== null"/>
     </div>
 </template>
@@ -47,7 +47,7 @@ export default {
 
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 200px 500px 100px;
+    grid-template-rows: 200px 500px 200px;
     grid-template-areas:
         "game game others-questions"
         "history history others-questions"

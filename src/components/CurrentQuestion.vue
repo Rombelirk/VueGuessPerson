@@ -56,7 +56,7 @@ export default {
 @import "~@/assets/styles/variables.scss";
 .current-question {
     grid-area: game;
-    box-shadow: 1px 1px 6px #949494;
+    box-shadow: $box-shadow;
     border-radius: 5px;
     background-color: $block-background-color;
     margin: $base-gutter;
@@ -80,6 +80,10 @@ export default {
             color: white;
             min-width: fit-content;
             padding: 0 5px;
+            transition: all 200ms ease-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .yes {
             background-color: $yes-color;

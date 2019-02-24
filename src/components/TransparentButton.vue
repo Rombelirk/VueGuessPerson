@@ -27,12 +27,12 @@ export default {
 .button {
     display: flex;
     align-items: center;
-    color: #394c4c;
+    color: white;
     cursor: pointer;
    
     font-size: .9em;
     &:hover {
-        color: #273535;
+        color: rgb(221, 221, 221);
     }
     .text {
          min-width: fit-content;

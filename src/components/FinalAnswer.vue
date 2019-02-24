@@ -4,7 +4,11 @@
             <div class="title">Final answer</div>
             <text-input :value="selectedPerson ? selectedPersonName() : ''" :change="inputChange"/>
 
-            <div v-if="suggestions.length > 0 && showSuggestions" class="suggestions">
+            <div
+                v-if="suggestions.length > 0 && showSuggestions"
+                class="suggestions"
+                v-click-outside="closeSuggestions"
+            >
                 <div
                     @click="()=>choosePerson(suggestion._id)"
                     class="suggestion"
@@ -42,8 +46,7 @@ export default {
     computed: {
         ...mapState({
             suggestions: state => state.game.suggestions
-        }),
-        
+        })
     },
     methods: {
         ...mapActions(["onFinalAnswerChange", "sendFinalAnswer"]),
@@ -52,7 +55,7 @@ export default {
             this.onFinalAnswerChange(value);
         },
         choosePerson(personId) {
-            console.log(personId)
+            console.log(personId);
             this.showSuggestions = false;
             this.selectedPerson = personId;
         },
@@ -64,6 +67,9 @@ export default {
             if (index !== -1) {
                 return this.suggestions[index].name;
             }
+        },
+        closeSuggestions() {
+            this.showSuggestions = false;
         }
     }
 };
@@ -79,10 +85,11 @@ export default {
     padding: $base-gutter;
     grid-area: final-answer;
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     .input-container {
         display: flex;
         flex-direction: column;
+        justify-content: start;
         position: relative;
         .title {
             font-size: 1.4em;
@@ -90,7 +97,7 @@ export default {
         }
         .suggestions {
             position: absolute;
-            top: 100%;
+            top: 60px;
             border: $standard-border;
             .suggestion {
                 cursor: pointer;
@@ -105,10 +112,9 @@ export default {
         }
     }
     .button-container {
-        height: 100%;
         margin-left: 20px;
+        margin-top: 10px;
         display: flex;
-        align-items: center;
     }
 }
 </style>
