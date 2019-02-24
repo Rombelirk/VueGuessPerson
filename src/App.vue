@@ -1,7 +1,9 @@
 <template>
     <div class="main">
         <header-component/>
-        <router-view/>
+        <div class="content">
+            <router-view/>
+        </div>
     </div>
 </template>
 
@@ -29,8 +31,6 @@ export default {
     },
     created() {
         this.fetchInitialInfo();
-        
-      
     }
 };
 </script>
@@ -38,10 +38,12 @@ export default {
 <style lang="scss">
 @import "~@/assets/styles/defaults.scss";
 
-
 .main {
-    max-width: 1200px;
-    height: 100%;
-    margin: auto;
+    height: 90vh;
+    .content {
+        max-width: 1200px;
+        margin: auto;
+        height: 100%;
+    }
 }
 </style>

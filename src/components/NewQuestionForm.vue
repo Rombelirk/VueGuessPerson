@@ -1,7 +1,7 @@
 <template>
     <div class="new-question">
         <div class="title">
-            Ask a general question about your character. Other players will naswer it.
+            Ask a general (yes/no) question about you. Other players will answer it.
         </div>
         <text-input
             :value="question"

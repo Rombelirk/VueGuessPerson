@@ -2,11 +2,13 @@
     <div class="questions">
         <div class="title">Other players' questions</div>
         <div class="question" :key="index" v-for="(question, index) in questions">
-            <div class="question-text">{{question.text}}</div>
+            <div class="name">{{question.person.name}}</div>
+            <div class="image">
+                <img :src="question.person.image">
+            </div>
 
-            <div v-if="question.person" class="asker">
-                <div>{{question.person.name}}</div>
-                <img class="image" :src="question.person.image">
+            <div class="question-text">
+                <span class="speech-bubble">{{question.text}}</span>
             </div>
             <div class="answer">
                 <base-button :click="()=>answerQuestion({id: question._id, answer: 'yes'})">Yes</base-button>
@@ -44,6 +46,7 @@ export default {
     margin: 10px;
     display: flex;
     align-items: center;
+   
     flex-direction: column;
     overflow-y: auto;
     padding: $base-gutter;
@@ -55,24 +58,85 @@ export default {
         color: #616161;
     }
     .question {
+        display: grid;
+        grid-template-columns: 160px 100px;
+        grid-template-rows: 30px 140px 60px;
+        grid-template-areas:
+            "name name"
+            "question image"
+            "answers answer";
+        border-radius: $border-radius;
         min-height: fit-content;
-        display: flex;
-        flex-direction: column;
+
         margin: 10px 0;
-        padding: 5px;
-        width: 200px;
-        box-shadow: 1px 1px 6px #949494;
-        background-color: #e0e0e0;
-        justify-content: center;
-        align-items: center;
+
+        /* box-shadow: 1px 1px 6px #949494; */
+        background-color: white;
+
+        .name {
+            grid-area: name;
+            grid-column-end: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image {
+            grid-area: image;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .question-text {
+            grid-area: question;
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 10px;
+            align-items: center;
+            font-size: .9em;
+            word-wrap: word-break;
+            padding: 10px;
+            .speech-bubble {
+                position: relative;
+                background: $main-theme-color;
+                border-radius: 0.4em;
+                color: white;
+                padding: 5px;
+                width: fit-content;
+                height: fit-content;
+                
+                
+            }
+
+            .speech-bubble:after {
+                content: "";
+                position: absolute;
+                right: 0;
+                top: 50%;
+                width: 0;
+                height: 0;
+                border: 6px solid transparent;
+                border-left-color: $main-theme-color;
+                border-right: 0;
+                border-top: 0;
+                margin-top: -3px;
+                margin-right: -6px;
+            }
+        }
+
         img {
-            max-height: 140px;
+            max-height: 120px;
             border-radius: 5px;
         }
         .answer {
+            grid-area: answers;
+            grid-column-end: 3;
             display: flex;
+            justify-content: center;
+            align-items: center;
             & > * {
                 margin: 5px;
+                padding: 5px 25px;
             }
         }
     }

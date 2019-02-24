@@ -1,19 +1,19 @@
 <template>
     <div class="history">
-        <div class="title">
-            History of closed questions.
-        </div>
-        <div :key="index" v-for="(question, index) in historyWithFlexValues" class="question">
-            <div class="text">{{question.text}}</div>
-            <div class="answers">
-                <div
-                    :style="`flex: ${question.flexYes}`"
-                    class="answered-yes"
-                >Yes: {{question.answeredYes}}</div>
-                <div
-                    :style="`flex: ${question.flexNo}`"
-                    class="answered-no"
-                >No: {{question.answeredNo}}</div>
+        <div class="title">History of closed questions.</div>
+        <div class="questions-container">
+            <div :key="index" v-for="(question, index) in historyWithFlexValues" class="question">
+                <div class="text">{{question.text}}</div>
+                <div class="answers">
+                    <div
+                        :style="`flex: ${question.flexYes}`"
+                        class="answered-yes"
+                    >Yes: {{question.answeredYes}}</div>
+                    <div
+                        :style="`flex: ${question.flexNo}`"
+                        class="answered-no"
+                    >No: {{question.answeredNo}}</div>
+                </div>
             </div>
         </div>
     </div>
@@ -49,32 +49,36 @@ export default {
         font-size: 1.4em;
         color: #616161;
     }
-    .question {
-        display: flex;
-        width: auto;
-        flex-direction: column;
-
-        .text {
-            grid-area: text;
-        }
-        .answers {
+    .questions-container {
+         overflow-y: auto;
+        .question {
             display: flex;
             width: auto;
-            border-radius: $border-radius;
-            overflow: hidden;
-
-            .answered-yes {
-                padding: 0 5px;
-                min-width: fit-content;
-                background-color: $yes-color;
-                grid-area: yes;
+            flex-direction: column;
+            min-height: fit-content;
+            .text {
+                grid-area: text;
             }
-            .answered-no {
-                padding: 0 5px;
-                min-width: fit-content;
-                grid-area: no;
-                background-color: $no-color;
-                color: white;
+            .answers {
+                display: flex;
+                width: auto;
+                border-radius: $border-radius;
+                overflow: hidden;
+
+                .answered-yes {
+                    padding: 0 5px;
+                    min-width: fit-content;
+                    background-color: $yes-color;
+                    grid-area: yes;
+                    color: white;
+                }
+                .answered-no {
+                    padding: 0 5px;
+                    min-width: fit-content;
+                    grid-area: no;
+                    background-color: $no-color;
+                    color: white;
+                }
             }
         }
     }

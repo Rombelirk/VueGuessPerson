@@ -20,11 +20,15 @@ export default {
 .button {
     background-color: rgb(143, 167, 204);
     color: white;
-    padding: 10px 20px;
+    padding: 5px 10px;
     cursor: pointer;
     display: flex;
     width: auto;
     max-width: fit-content;
+    max-height: fit-content;
     border-radius: 3px;
+    &:hover {
+        background-color: rgb(109, 130, 161);
+    }
 }
 </style>

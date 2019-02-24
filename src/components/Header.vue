@@ -1,15 +1,20 @@
 <template>
-    <div class="header">
-        <div v-if="authenticated" class="players-online-block">Players online: {{playersOnline}}</div>
-        <div class="start-game-block">
-            <base-button :click="startGame" v-if="authenticated && game === null">Start game</base-button>
-        </div>
-        <div v-if="authenticated">{{login}}</div>
-        <div class="auth-block">
-            <base-button v-if="!authenticated" :click="onLoginClick">Login</base-button>
-            <transparent-button :click="logout" v-if="authenticated" :text="'Sign Out'">
-                <font-awesome-icon icon="sign-out-alt"></font-awesome-icon>
-            </transparent-button>
+    <div class="header-container">
+        <div class="header">
+            <div v-if="authenticated" class="players-online-block">Players online: {{playersOnline}}</div>
+            <div class="start-game-block">
+                <base-button :click="startGame" v-if="authenticated && game === null">Start game</base-button>
+            </div>
+            
+            <div class="auth-block">
+                <base-button v-if="!authenticated" :click="onLoginClick">Login</base-button>
+                <div class="login-container" v-if="authenticated">Username: {{login}}</div>
+                <transparent-button :click="logout" v-if="authenticated" :text="'Sign Out'">
+                    <font-awesome-icon icon="sign-out-alt"></font-awesome-icon>
+                </transparent-button>
+                 
+            </div>
+           
         </div>
     </div>
 </template>
@@ -50,25 +55,35 @@ export default {
 
 <style scoped lang="scss">
 @import "~@/assets/styles/variables.scss";
-.header {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr 1fr;
-    width: 100%;
-    height: 80px;
+.header-container {
     background-color: $main-theme-color;
-    align-items: center;
+    width: 100%;
+    .header {
+        color: white;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        max-width: 1200px;
+        height: 80px;
+        margin: auto;
+        align-items: center;
 
-    .players-online-block {
-        width: auto;
-        display: flex;
-        justify-content: center;
-    }
-    .start-game-block {
-        width: 200px;
-    }
-    .auth-block {
-        display: flex;
-        margin-right: 30px;
+        .players-online-block {
+            grid-column-start: 1;
+            width: auto;
+            display: flex;
+            justify-content: center;
+        }
+        .start-game-block {
+            grid-column-start: 2;
+            width: 200px;
+        }
+        .auth-block {
+            flex-direction: column;
+            grid-column-start: 3;
+            display: flex;
+            /* margin-right: 30px; */
+            justify-self: flex-end;
+        }
     }
 }
 </style>
