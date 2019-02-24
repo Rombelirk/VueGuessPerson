@@ -77,9 +77,8 @@ router.get("/logout", (req, res) => {
             sock.emit('disconnect');
         }
     }
-    req.session.destroy(() => {
-        res.end()
-    })
+    req.session = null;
+    res.end();
 })
 
 router.get("/", (req, res) => {
