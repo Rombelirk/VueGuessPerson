@@ -82,4 +82,10 @@ router.get("/logout", (req, res) => {
     })
 })
 
+router.get("/", (req, res) => {
+    res.sendFile(__dirname + '/../dist/index.html');
+})
+
+
+
 export default router;
