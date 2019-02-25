@@ -32,7 +32,8 @@ io.on('connection', socket => {
                 currentQuestion: null
             });
 
-            const user = await User.findById(socket.handshake.session.userId)
+            const user = await User.findById(socket.handshake.session.userId);
+            console.log("user in socket", user)
             const savedGame = await newGame.save();
             user.player.currentGame = savedGame._id;
             const savedUser = await user.save();

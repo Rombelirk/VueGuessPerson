@@ -11,6 +11,7 @@ router.get("/init", isAuthenticated, async (req, res) => {
     if (req.session && req.session.login) {
 
         const user = await getUser(req.session.userId);
+        console.log("user in router", user)
         const questions = await getQuestions(user);
 
         return res.send({
