@@ -64,10 +64,7 @@ export default {
     justify-items: center;
     width: auto;
     /* width: 100%; */
-    .title {
-        font-size: 1.4em;
-        color: #616161;
-    }
+  
     .answers {
         display: flex;
         border-radius: 3px;

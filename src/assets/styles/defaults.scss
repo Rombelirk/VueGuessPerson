@@ -12,3 +12,11 @@
   div {
     font-family: Mukta;
   }
+
+  .title {
+    font-size: 1.4em;
+    color: #616161;
+    @media (max-width: 600px) {
+      font-size: 1.2em;
+    }
+  }

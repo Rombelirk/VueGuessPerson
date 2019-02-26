@@ -18,6 +18,9 @@ export default {
 
 <style scoped lang="scss">
 .button {
+     @media (max-width: 600px) {
+      font-size: .8em;
+    }
     background-color: rgb(143, 167, 204);
     color: white;
     padding: 5px 10px;

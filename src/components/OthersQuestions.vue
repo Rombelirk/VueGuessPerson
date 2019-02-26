@@ -53,10 +53,7 @@ export default {
     background-color: $block-background-color;
     box-shadow: $box-shadow;
     border-radius: $border-radius;
-    .title {
-        font-size: 1.4em;
-        color: #616161;
-    }
+ 
     .question {
         display: grid;
         grid-template-columns: 160px 100px;

@@ -45,10 +45,7 @@ export default {
     border-radius: $border-radius;
     display: flex;
     flex-direction: column;
-    .title {
-        font-size: 1.4em;
-        color: #616161;
-    }
+  
     .questions-container {
          overflow-y: auto;
         .question {

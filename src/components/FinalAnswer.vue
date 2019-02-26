@@ -55,7 +55,6 @@ export default {
             this.onFinalAnswerChange(value);
         },
         choosePerson(personId) {
-            console.log(personId);
             this.showSuggestions = false;
             this.selectedPerson = personId;
         },
@@ -91,10 +90,7 @@ export default {
         flex-direction: column;
         justify-content: start;
         position: relative;
-        .title {
-            font-size: 1.4em;
-            color: #616161;
-        }
+     
         .suggestions {
             position: absolute;
             top: 60px;

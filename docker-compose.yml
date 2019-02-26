@@ -17,14 +17,13 @@ services:
       - mongo
     links:
       - mongo
+    external_links:
+      - mongo
     ports:
       - "8080:8080"
       - "3000:3000"
     volumes:
         - ./:/app
-    command: >
-      bash -c "npm run start
-              && npm run build"
     restart: always
     networks:
       - backend

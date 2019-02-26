@@ -44,7 +44,6 @@ export default {
 <style scoped lang="scss">
 @import "~@/assets/styles/variables.scss";
 .game {
-
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 200px 500px 200px;
@@ -52,5 +51,14 @@ export default {
         "game game others-questions"
         "history history others-questions"
         "final-answer final-answer others-questions";
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+        grid-template-rows: 200px 300px 600px 300px;
+        grid-template-areas:
+            "game"
+            "history"
+            "others-questions"
+            "final-answer";
+    }
 }
 </style>
