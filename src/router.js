@@ -8,10 +8,8 @@ const router = new VueRouter({
     routes: [
         {path: '/login', component: Login} ,
         {path: '/', component: Game},
-    ] 
-    
-    
-})
+    ]
+});
 
 
 export default router;
