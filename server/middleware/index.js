@@ -6,6 +6,8 @@ import sharedsession from "express-socket.io-session";
 import expressSession from "express-session";
 import express from "express"
 import path from "path"
+import httpAuth from "http-auth" 
+import base from "./baseAuth"
 
 const session = expressSession({
     secret: "my-secret",
@@ -14,6 +16,8 @@ const session = expressSession({
 });
 
 app.use(express.static(__dirname+"/../../dist"));
+
+app.use(httpAuth.connect(base));
 
 app.use(session);
 io.use(sharedsession(session, {

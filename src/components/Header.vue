@@ -5,16 +5,14 @@
             <div class="start-game-block">
                 <base-button :click="startGame" v-if="authenticated && game === null">Start game</base-button>
             </div>
-            
+
             <div class="auth-block">
                 <base-button v-if="!authenticated" :click="onLoginClick">Login</base-button>
                 <div class="login-container" v-if="authenticated">Username: {{login}}</div>
                 <transparent-button :click="logout" v-if="authenticated" :text="'Sign Out'">
                     <font-awesome-icon icon="sign-out-alt"></font-awesome-icon>
                 </transparent-button>
-                 
             </div>
-           
         </div>
     </div>
 </template>
@@ -66,7 +64,9 @@ export default {
         height: 80px;
         margin: auto;
         align-items: center;
-
+        @media (max-width: 600px) {
+            font-size: .9em;
+        }
         .players-online-block {
             grid-column-start: 1;
             width: auto;

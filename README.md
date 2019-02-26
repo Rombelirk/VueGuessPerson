@@ -1,29 +1,8 @@
 # QuessPerson
 
-## Project setup
-```
-npm install
-```
+## What is it about?
+Guess a random famous person or character. Ask generall questions and other player will answer it. Don't forget to answer other's questions about their characters.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Run your tests
-```
-npm run test
-```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

@@ -47,10 +47,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    .title {
-        font-size: 1.4em;
-        color: #616161;
-    }
+  
 }
 @import "~@/assets/styles/variables.scss";
 </style>

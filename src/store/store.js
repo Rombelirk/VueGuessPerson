@@ -49,7 +49,6 @@ const game = {
             state.questions.push(question)
         },
         setSuggestions(state, suggestions) {
-            console.log(suggestions)
             if (suggestions) state.suggestions = suggestions
         }
     },

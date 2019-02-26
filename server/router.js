@@ -11,7 +11,6 @@ router.get("/init", isAuthenticated, async (req, res) => {
     if (req.session && req.session.login) {
 
         const user = await getUser(req.session.userId);
-        console.log("user in router", user)
         const questions = await getQuestions(user);
 
         return res.send({
@@ -36,7 +35,6 @@ router.post("/signup", (req, res) => {
             res.end();
         } else {
             const newPlayer = new Player({});
-            newPlayer.save().catch(err => console.log(err));
             const newUser = new User({ login: req.body.login, password: req.body.password, player: { currentGame: null } });
             newUser.save().then(() => {
                 res.send({
