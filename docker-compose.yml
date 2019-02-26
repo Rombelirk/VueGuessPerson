@@ -24,6 +24,7 @@ services:
         - ./:/app
     command: >
       bash -c "npm run start
+              && export PORT=3000
               && npm run build"
     restart: always
     networks:
