@@ -1,9 +1,11 @@
 import io from "socket.io-client";
 
 class Socket {
+
     constructor() {
         this.io = null;
     }
+
     connect() {
         if (this.io === null) {
             this.io = io()
@@ -17,7 +19,5 @@ class Socket {
         }
     }
 }
-
-
 
 export default new Socket();

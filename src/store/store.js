@@ -3,9 +3,9 @@ import Vue from 'vue'
 import axios from "axios";
 import router from "../router"
 import socket from "../socket"
-Vue.use(Vuex)
+Vue.use(Vuex);
 
-window.socket = socket
+window.socket = socket;
 
 const game = {
     state: {
@@ -17,18 +17,23 @@ const game = {
         answerQuestion({ commit }, payload) {
             socket.io.emit("answerQuestion", payload)
         },
-        startGame({ commit }) {
+
+        startGame() {
             socket.io.emit("startNewGame")
         },
+
         sendQuestion({ commit }, question) {
             socket.io.emit("newQuestion", { question })
         },
+
         closeQuestion({ commit }, gameId) {
             socket.io.emit("closeQuestion", gameId)
         },
+
         onFinalAnswerChange({ commit }, value) {
             socket.io.emit("changeFinalAnswer", value)
         },
+
         sendFinalAnswer({ commit }, personId) {
             socket.io.emit("sendFinalAnswer", personId)
         }
@@ -37,19 +42,25 @@ const game = {
         setGame(state, game) {
             state.game = game
         },
+
         setQuestions(state, questions) {
             state.questions = questions;
         },
+
         setCurrentQuestion(state, question) {
             if (state.game) {
                 state.game.currentQuestion = question;
             }
         },
+
         addNewQuestion(state, question) {
             state.questions.push(question)
         },
+
         setSuggestions(state, suggestions) {
-            if (suggestions) state.suggestions = suggestions
+            if (suggestions) {
+                state.suggestions = suggestions
+            }
         }
     },
     getters: {
@@ -57,30 +68,33 @@ const game = {
             if (state.questions.length < 4) {
                 return state.questions;
             }
+
             return state.questions.slice(0, 3)
         },
-        historyWithFlexValues(state) {
-            if (state.game && state.game.history) {
-                return state.game.history.map(question => {
-                    if (question.answeredYes + question.answeredNo === 0) {
-                        return {
-                            ...question,
-                            flexYes: 1,
-                            flexNo: 1
-                        }
-                    }
 
+        historyWithFlexValues(state) {
+            if (!state.game || !state.game.history) {
+                return [];
+            }
+
+            return state.game.history.map(question => {
+                if (question.answeredYes + question.answeredNo === 0) {
                     return {
                         ...question,
-                        flexYes: question.answeredYes,
-                        flexNo: question.answeredNo
+                        flexYes: 1,
+                        flexNo: 1
                     }
-                })
-            }
-            return [];
+                }
+
+                return {
+                    ...question,
+                    flexYes: question.answeredYes,
+                    flexNo: question.answeredNo
+                }
+            })
         }
     }
-}
+};
 
 const main = {
     state: {
@@ -107,40 +121,49 @@ const main = {
             socket.io.on("playersCountChanged", data => {
                 commit("changePlayersCount", data.playersCount);
             });
+
             socket.io.on("gameStarted", data => {
                 commit("setGame", data.game);
             });
+
             socket.io.on("questionAccepted", question => {
                 commit("setCurrentQuestion", question)
             });
+
             socket.io.on("updateAnswers", question => {
                 commit("setCurrentQuestion", question)
             });
+
             socket.io.on("newQuestionAsked", question => {
                 commit("addNewQuestion", question)
             });
+
             socket.io.on("newQuestions", questions => {
                 commit("setQuestions", questions);
             });
+
             socket.io.on("updateGame", game => {
                 commit("setGame", game);
             });
+
             socket.io.on("suggestedPersons", suggestions => {
                 commit("setSuggestions", suggestions)
             });
+
             socket.io.on("finalAnswerCorrect", () => {
                 alert("Correct!");
                 commit("setGame", null);
-            })
+            });
+
             socket.io.on("finalAnswerIncorrect", () => {
                 alert("Nope, try again.")
             })
         },
 
         submitSignup({ commit }, { login, password }) {
-            axios.post("/signup", { login, password }).then(res => {
-            })
+            axios.post("/signup", { login, password }).then(res => res);
         },
+
         fetchInitialInfo({ commit, dispatch }) {
             axios.get("/init").then(res => {
                 if (res.data.user) {
@@ -149,10 +172,11 @@ const main = {
                     dispatch("setSocketHandlers");
                     commit("setGame", res.data.player.currentGame);
                     commit("setQuestions", res.data.questions);
-                } else if (res.data.message === "Not authenticated") {
+                }
+                else if (res.data.message === "Not authenticated") {
                     commit("setAuthenticated", false);
                 }
-            })
+            });
         },
         logout({ dispatch }) {
             axios.get("/logout").then(() => {
@@ -170,7 +194,8 @@ const main = {
             if (value === false) {
                 return state.authenticated = false;
             }
-            socket.connect()
+
+            socket.connect();
             state.authenticated = true;
         },
 
