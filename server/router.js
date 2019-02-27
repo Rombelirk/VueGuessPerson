@@ -4,6 +4,7 @@ import { getQuestions, getUser } from "./socketHandlers/controllers";
 import isAuthenticated from "./middleware/isAuthenticated";
 import Player from "./models/Player";
 import io from "./socket";
+import path from "path"
 
 const router = express.Router();
 
@@ -82,10 +83,15 @@ router.get("/logout", (req, res) => {
     })
 
 })
-
 router.get("/", (req, res) => {
-    res.sendFile(__dirname + '/../dist/index.html');
+    res.sendFile(path.resolve(__dirname + '/../dist/index.html'));
 })
+router.get("/login", (req, res) => {
+    res.sendFile(path.resolve(__dirname + '/../dist/index.html'));
+})
+
+
+
 
 
 
