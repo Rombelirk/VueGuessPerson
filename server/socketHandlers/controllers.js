@@ -1,4 +1,3 @@
-
 import { User } from "../models/User";
 import Question from "../models/Question";
 
@@ -14,7 +13,7 @@ export const getQuestions = async user => {
         model: 'Person'
     });
     return questions;
-}
+};
 
 export const getUser = async userId => {
     const user = await User.findById(userId);
@@ -32,7 +31,8 @@ export const getUser = async userId => {
             }
         ]
     });
+
     return user;
-}
+};
 
 

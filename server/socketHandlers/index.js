@@ -1,4 +1,4 @@
-import io from "../socket";
+import {io} from "../server";
 import Game from "../models/Game";
 import Person from "../models/Person";
 import Question from "../models/Question";
