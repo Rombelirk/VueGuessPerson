@@ -1,12 +1,10 @@
-import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+import {Schema, model} from 'mongoose';
 
-const PlayerSchema = new Schema({
+export const PlayerSchema = new Schema({
     currentGame: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Game'
     }
-})
+});
 
-const Player = mongoose.model('Player', PlayerSchema);
-export default Player;
+export default model('Player', PlayerSchema);

@@ -1,27 +1,24 @@
-import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+import {Schema, model} from 'mongoose';
 
-const QuestionSchema = new Schema({ 
+const QuestionSchema = new Schema({
     game: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Game'
     },
     person : {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Person'
     },
     closed: Boolean,
-    text: String, 
-    answeredYes: Number, 
-    answeredNo: Number, 
+    text: String,
+    answeredYes: Number,
+    answeredNo: Number,
     answeredDontKnow: Number,
     answeredTotal: Number,
     whoAnswered: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     }]
-})
+});
 
-const Question = mongoose.model('Question', QuestionSchema);
-
-export default Question;
+export default model('Question', QuestionSchema);

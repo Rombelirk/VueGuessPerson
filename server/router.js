@@ -11,7 +11,6 @@ router.get("/init", isAuthenticated, async (req, res) => {
     const { session: { userId, login }} = req;
 
     // TODO if user not found?
-    // TODO cast to number?
     const user = await getUser(userId);
     const questions = await getQuestions(user);
 
@@ -75,10 +74,11 @@ router.post("/login", async(req, res) => {
 
 router.get("/logout", async(req, res) => {
     const sockets = io.sockets.sockets;
+
+    // todo rewrite without loop
     Object.keys(sockets).forEach(key => {
         const socket = sockets[key];
-        // todo strict equal?
-        if (socket.handshake.session.userId == req.session.userId) {
+        if (socket.handshake.session.userId === req.session.userId) {
             socket.emit("disconnect");
         }
     });
