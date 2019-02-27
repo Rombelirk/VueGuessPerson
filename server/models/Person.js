@@ -1,20 +1,15 @@
-import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
-
+import {Schema, model} from 'mongoose';
 
 const PersonSchema = new Schema({
     name: String,
     image: String,
     wikiUrl: String
-})
+});
 
 PersonSchema.statics.random = async function () {
     const count = await this.countDocuments();
     const rand = Math.floor(Math.random() * count);
-    const randomDoc = await this.findOne().skip(rand);
-    return randomDoc;
+    return this.findOne().skip(rand);
 };
 
-
-const Person = mongoose.model('Person', PersonSchema);
-export default Person;
+export default model('Person', PersonSchema);
