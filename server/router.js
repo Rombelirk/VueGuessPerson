@@ -3,6 +3,7 @@ import { User } from "./models/User";
 import { getQuestions, getUser } from "./socketHandlers/controllers";
 import isAuthenticated from "./middleware/isAuthenticated";
 import {io} from "./server";
+import path from "path";
 
 const router = express.Router();
 
@@ -87,7 +88,7 @@ router.get("/logout", async(req, res) => {
 });
 
 router.get("/", (req, res) => {
-    return res.sendFile(__dirname + '/../dist/index.html');
+    return res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 });
 
 export default router;
