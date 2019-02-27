@@ -5,7 +5,6 @@ import router from "../router"
 import socket from "../socket"
 Vue.use(Vuex);
 
-window.socket = socket;
 
 const game = {
     state: {
@@ -106,12 +105,11 @@ const main = {
         }
     },
     actions: {
-        submitLogin({ commit, dispatch }, { login, password }) {
+        async submitLogin({ commit, dispatch }, { login, password }) {
             axios.post("/login", { login, password }).then(res => {
                 if (res.data.user) {
                     commit("setUserInfo", res.data.user);
                     commit("setAuthenticated");
-                    dispatch("setSocketHandlers");
                     router.push("/");
                     dispatch("fetchInitialInfo");
                 }
