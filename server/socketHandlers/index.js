@@ -9,23 +9,24 @@ io.on('connection', socket => {
 
     socket.on("disconnect", () => {
         socket.disconnect();
+
         io.emit('playersCountChanged', {
             playersCount: io.engine.clientsCount,
         });
-    })
+    });
 
     io.emit('playersCountChanged', {
         playersCount: io.engine.clientsCount,
     });
 
     socket.on("startNewGame", async () => {
-        try {
-            const game = await Game.findOne({ user: socket.handshake.session.userId });
-            if (game) {
-                throw new Error("This user already has an open game!")
-            }
+        const game = await Game.findOne({ user: socket.handshake.session.userId });
+        if (game) {
+            return socket.emit("errorOccurred", "This user already has an open game!");
+        }
 
-            const person = await Person.random()
+        try {
+            const person = await Person.random();
             const newGame = new Game({
                 person: person._id || null,
                 user: socket.handshake.session.userId,
@@ -35,11 +36,14 @@ io.on('connection', socket => {
             const user = await User.findById(socket.handshake.session.userId);
             const savedGame = await newGame.save();
             user.player.currentGame = savedGame._id;
-            const savedUser = await user.save();
+
+            await user.save();
             await Game.populate(savedGame, [{ path: "person" }, { path: "user", select: '_id' }]);
+
             socket.emit('gameStarted', {
                 game: savedGame
             });
+
         } catch (error) {
             socket.emit("errorOccurred", error.message)
         }
@@ -178,17 +182,19 @@ io.on('connection', socket => {
             if (!(user && user.player && user.player.currentGame)) {
                 return socket.emit("errorOccurred", "User not found or doesn't have current game")
             }
-            if (user.player.currentGame.person.equals(personId)) {
-                // todo: find out how to rebuild db structure to avoid this multiple nulling
-                const game = await Game.findOne({ user: socket.handshake.session.userId });
-                game.user = null;
-                game.save();
-                user.player.currentGame = null;
-                await user.save();
-                socket.emit("finalAnswerCorrect");
-            } else {
-                socket.emit("finalAnswerIncorrect");
+
+            if (!user.player.currentGame.person.equals(personId)) {
+                return socket.emit("finalAnswerIncorrect");
             }
+            // todo: find out how to rebuild db structure to avoid this multiple nulling
+            const game = await Game.findOne({ user: socket.handshake.session.userId });
+            game.user = null;
+            game.save();
+            user.player.currentGame = null;
+            await user.save();
+
+            socket.emit("finalAnswerCorrect");
+
         } catch (error) {
             socket.emit("errorOccurred", error.message)
         }
@@ -196,8 +202,4 @@ io.on('connection', socket => {
 
 
     })
-
-    socket.on("error", error => {
-        socket.emit("errorOccurred", error.message);
-    });
 });

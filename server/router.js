@@ -28,6 +28,7 @@ router.get("/init", isAuthenticated, async (req, res) => {
     })
 });
 
+
 router.post("/signup", (req, res) => {
     User.find({ username: req.body.login }).then(function (response) {
         if (response.length > 0) {
@@ -79,7 +80,7 @@ router.get("/logout", (req, res) => {
     req.session.destroy(() => {
         res.end();
     })
-    
+
 })
 
 router.get("/", (req, res) => {
