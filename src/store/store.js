@@ -95,7 +95,6 @@ const main = {
                 if (res.data.user) {
                     commit("setUserInfo", res.data.user);
                     commit("setAuthenticated");
-                    dispatch("setSocketHandlers");
                     router.push("/");
                     dispatch("fetchInitialInfo");
                 }
