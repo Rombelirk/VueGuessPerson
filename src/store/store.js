@@ -3,6 +3,8 @@ import Vue from 'vue'
 import axios from "axios";
 import router from "../router"
 import socket from "../socket"
+import uuid from "uuid"
+
 Vue.use(Vuex);
 
 
@@ -102,7 +104,8 @@ const main = {
         playersOnline: 0,
         user: {
             login: ""
-        }
+        },
+        alerts: []
     },
     actions: {
         async submitLogin({ commit, dispatch }, { login, password }) {
@@ -112,10 +115,12 @@ const main = {
                     commit("setAuthenticated");
                     router.push("/");
                     dispatch("fetchInitialInfo");
+                } else {
+                    dispatch("addUserAlertWithTimer", {text: res.data.message, type: "error"})
                 }
             })
         },
-        setSocketHandlers({ commit }) {
+        setSocketHandlers({ commit, dispatch }) {
             socket.io.on("playersCountChanged", data => {
                 commit("changePlayersCount", data.playersCount);
             });
@@ -149,17 +154,22 @@ const main = {
             });
 
             socket.io.on("finalAnswerCorrect", () => {
-                alert("Correct!");
+                dispatch("addUserAlertWithTimer", {text: "Correct!", type: "success"})
                 commit("setGame", null);
             });
 
             socket.io.on("finalAnswerIncorrect", () => {
-                alert("Nope, try again.")
+                dispatch("addUserAlertWithTimer", {text: "Nope, try again", type: "error"})
             })
         },
 
-        submitSignup({ commit }, { login, password }) {
-            axios.post("/signup", { login, password }).then(res => res);
+        async submitSignup({ commit, dispatch }, { login, password }) {
+            const response = await axios.post("/signup", { login, password })
+            if (response.data.code === 0) {
+                dispatch("submitLogin", { login, password });
+                dispatch("addUserAlertWithTimer", {text: "User created", type: "success"})
+            }
+
         },
 
         fetchInitialInfo({ commit, dispatch }) {
@@ -181,7 +191,15 @@ const main = {
                 socket.disconnect();
                 dispatch("fetchInitialInfo");
             })
-        }
+        },
+        addUserAlertWithTimer({ commit }, { type, text }) {
+           
+            const id = uuid();
+            commit("addUserAlert", { type, text, id })
+            setTimeout(() => {
+                commit("removeUserAlert", id)
+            }, 5000)
+        },
 
     },
     mutations: {
@@ -199,6 +217,16 @@ const main = {
 
         changePlayersCount(state, count) {
             state.playersOnline = count;
+        },
+
+        addUserAlert(state, alert) {
+            const { type, text, id } = alert;
+            state.alerts.push({ type, text, id });
+        },
+
+        removeUserAlert(state, id) {
+            const index = state.alerts.findIndex(alert => alert.id === id);
+            state.alerts.splice(index, 1);
         }
     },
     getters: {

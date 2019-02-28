@@ -1,5 +1,6 @@
 <template>
     <div class="main">
+        <user-alert/>
         <header-component/>
         <div class="content">
             <router-view/>
@@ -9,11 +10,13 @@
 
 <script>
 import Header from "./components/Header.vue";
+import UserAlert from "./components/UserAlert.vue"
 import { mapActions, mapMutations, mapState } from "vuex";
 export default {
     name: "App",
     components: {
-        HeaderComponent: Header
+        HeaderComponent: Header,
+        UserAlert
     },
     methods: {
         ...mapActions({
