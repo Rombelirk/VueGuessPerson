@@ -5,6 +5,7 @@ import socketIo from "socket.io";
 import sharedsession from "express-socket.io-session";
 import bodyParser from 'body-parser';
 import expressSession from "express-session";
+import fileUpload from 'express-fileupload';
 import express from "express"
 import httpAuth from "http-auth"
 import path from "path";
@@ -19,10 +20,10 @@ export const session = expressSession({
 });
 
 export const app = express();
-
+app.use(fileUpload());
 app.use(express.static(path.resolve(__dirname, "../../dist")));
+app.use(express.static(path.resolve(__dirname,"/../../images")));
 app.use(httpAuth.connect(base));
-
 app.use(session);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -38,9 +39,10 @@ handlers(io);
 
 
 const PORT = 3000;
+const dbAuth = process.env.NODE_ENV === "production" ? `${config.dbUser}:${config.dbPassword}@` : "";
 
 mongoose
-    .connect(`mongodb://${config.dbUser}:${config.dbPassword}@${config.dbHost}/${config.dbName}`, { useNewUrlParser: true })
+    .connect(`mongodb://${dbAuth}${config.dbHost}/${config.dbName}`, { useNewUrlParser: true })
     .then(() => {
         console.log("mongoose is up");
 

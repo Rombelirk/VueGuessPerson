@@ -2,9 +2,9 @@
     <div class="questions">
         <div class="title">Other players' questions</div>
         <div class="question" :key="index" v-for="(question, index) in questions">
-            <div class="name">{{question.person.name}}</div>
+            <a target="_blank" :href="question.person.wikiUrl || ''" class="name">{{question.person.name}}</a>
             <div class="image">
-                <img :src="question.person.image">
+                <img :src="`${question.person.image}`">
             </div>
 
             <div class="question-text">
@@ -101,8 +101,6 @@ export default {
                 padding: 5px;
                 width: fit-content;
                 height: fit-content;
-                
-                
             }
 
             .speech-bubble:after {

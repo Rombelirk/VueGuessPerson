@@ -1,9 +1,11 @@
 import express from 'express';
 import { User } from "./models/User";
 import { getQuestions, getUser } from "./socketHandlers/controllers";
+import Person from "./models/Person"
 import isAuthenticated from "./middleware/isAuthenticated";
 import {io} from "./server";
 import path from "path";
+
 
 const router = express.Router();
 
@@ -87,8 +89,40 @@ router.get("/logout", async(req, res) => {
     return res.end();
 });
 
+
+router.post("/upload", async (req, res) => {
+    try {
+        if (!req.files)
+            return res.send({ message: 'No files were uploaded.', code: 1 });
+        let sampleFile = req.files.image;
+        sampleFile.mv("images/" + sampleFile.name, async err => {
+            if (err) {
+                return res.send({ message: err.message, code: 1 });
+            }
+
+            const newPerson = new Person({
+                name: req.body.name,
+                wikiUrl: req.body.wikiUrl,
+                image: sampleFile.name
+            });
+
+            await newPerson.save();
+            return res.send({ message: "Person saved", code: 0 });
+        });
+    } catch (err) {
+        return res.send({ message: err.message, code: 1 });
+    }
+})
+
 router.get("/", (req, res) => {
-    return res.sendFile(path.resolve(__dirname, '../dist/index.html'));
-});
+    res.sendFile(path.resolve(__dirname, '/../dist/index.html'));
+})
+router.get("/login", (req, res) => {
+    res.sendFile(path.resolve(__dirname, '/../dist/index.html'));
+})
+router.get("/upload", isAuthenticated, (req, res) => {
+    res.sendFile(path.resolve(__dirname, '/../dist/index.html'));
+})
+
 
 export default router;

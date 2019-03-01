@@ -1,5 +1,4 @@
 const config = {
-    dbUrl:"",
     dbUser: "",
     dbPassword: "",
     dbHost: "",

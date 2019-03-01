@@ -3,7 +3,7 @@
         <div class="header">
             <div v-if="authenticated" class="players-online-block">Players online: {{playersOnline}}</div>
             <div class="start-game-block">
-                <base-button :click="startGame" v-if="authenticated && game === null">Start game</base-button>
+                <base-button :click="onStartGame" v-if="authenticated && game === null">Start game</base-button>
             </div>
 
             <div class="auth-block">
@@ -41,7 +41,11 @@ export default {
         ...mapActions({
             startGame: "startGame",
             logout: "logout"
-        })
+        }),
+        onStartGame() {
+            this.$router.push("/");
+            this.startGame();
+        }
     },
     components: {
         Login,

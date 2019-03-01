@@ -1,6 +1,6 @@
 <template>
     <div class="history">
-        <div class="title">History of closed questions.</div>
+        <div class="title">History of closed questions</div>
         <div class="questions-container">
             <div :key="index" v-for="(question, index) in historyWithFlexValues" class="question">
                 <div class="text">{{question.text}}</div>

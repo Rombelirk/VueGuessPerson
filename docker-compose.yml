@@ -13,6 +13,8 @@ services:
 
   web:
     build: .
+    environment:
+     - NODE_ENV=development
     depends_on:
       - mongo
     links:
