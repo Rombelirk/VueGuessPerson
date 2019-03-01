@@ -21,8 +21,8 @@ export const session = expressSession({
 
 export const app = express();
 app.use(fileUpload());
-app.use(express.static(path.resolve(__dirname, "../../dist")));
-app.use(express.static(path.resolve(__dirname,"/../../images")));
+app.use(express.static(path.resolve(__dirname, "../dist")));
+app.use(express.static(path.resolve(__dirname, "../images")));
 app.use(httpAuth.connect(base));
 app.use(session);
 app.use(bodyParser.urlencoded({ extended: false }));

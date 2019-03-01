@@ -115,13 +115,13 @@ router.post("/upload", async (req, res) => {
 })
 
 router.get("/", (req, res) => {
-    res.sendFile(path.resolve(__dirname, '/../dist/index.html'));
+    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 })
 router.get("/login", (req, res) => {
-    res.sendFile(path.resolve(__dirname, '/../dist/index.html'));
+    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 })
 router.get("/upload", isAuthenticated, (req, res) => {
-    res.sendFile(path.resolve(__dirname, '/../dist/index.html'));
+    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 })
 
 
