@@ -5,6 +5,7 @@ import { app } from "../server";
 import sharedsession from "express-socket.io-session";
 import expressSession from "express-session";
 import express from "express"
+import fileUpload from 'express-fileupload';
 import path from "path"
 import httpAuth from "http-auth" 
 import base from "./baseAuth"
@@ -15,7 +16,10 @@ const session = expressSession({
     saveUninitialized: true
 });
 
+app.use(fileUpload());
+
 app.use(express.static(__dirname+"/../../dist"));
+app.use(express.static(__dirname+"/../../images"));
 
 app.use(httpAuth.connect(base));
 

@@ -23,7 +23,10 @@ const game = {
             socket.io.emit("startNewGame")
         },
 
-        sendQuestion({ commit }, question) {
+        sendQuestion({ commit, dispatch }, question) {
+            if (!question) {
+                return dispatch("addUserAlertWithTimer", {type: "error", text: "Question is not specified"})
+            }
             socket.io.emit("newQuestion", { question })
         },
 
@@ -116,9 +119,26 @@ const main = {
                     router.push("/");
                     dispatch("fetchInitialInfo");
                 } else {
-                    dispatch("addUserAlertWithTimer", {text: res.data.message, type: "error"})
+                    dispatch("addUserAlertWithTimer", { text: res.data.message, type: "error" })
                 }
             })
+        },
+        async sendPerson({ commit, dispatch }, person) {
+            const { image, name, wikiUrl } = person;
+            const formData = new FormData();
+
+            formData.append("image", image);
+            formData.append("name", name);
+            formData.append("wikiUrl", wikiUrl);
+
+            const response = await axios.post("/upload", formData);
+
+            if (response.data.code && response.data.code !== 0) { 
+                return dispatch("addUserAlertWithTimer", { text: response.data.message, type: "error" }) 
+            }
+
+            return dispatch("addUserAlertWithTimer", { text: response.data.message, type: "success" }) 
+
         },
         setSocketHandlers({ commit, dispatch }) {
             socket.io.on("playersCountChanged", data => {
@@ -154,12 +174,12 @@ const main = {
             });
 
             socket.io.on("finalAnswerCorrect", () => {
-                dispatch("addUserAlertWithTimer", {text: "Correct!", type: "success"})
+                dispatch("addUserAlertWithTimer", { text: "Correct!", type: "success" })
                 commit("setGame", null);
             });
 
             socket.io.on("finalAnswerIncorrect", () => {
-                dispatch("addUserAlertWithTimer", {text: "Nope, try again", type: "error"})
+                dispatch("addUserAlertWithTimer", { text: "Nope, try again", type: "error" })
             })
         },
 
@@ -167,7 +187,7 @@ const main = {
             const response = await axios.post("/signup", { login, password })
             if (response.data.code === 0) {
                 dispatch("submitLogin", { login, password });
-                dispatch("addUserAlertWithTimer", {text: "User created", type: "success"})
+                dispatch("addUserAlertWithTimer", { text: "User created", type: "success" })
             }
 
         },
@@ -193,7 +213,6 @@ const main = {
             })
         },
         addUserAlertWithTimer({ commit }, { type, text }) {
-           
             const id = uuid();
             commit("addUserAlert", { type, text, id })
             setTimeout(() => {

@@ -41,7 +41,7 @@ export default {
     position: fixed;
     top: 20px;
     right: 20px;
-
+    z-index: 1;
     .user-alert {
         width: 200px;
         height: fit-content;
