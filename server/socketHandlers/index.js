@@ -148,9 +148,10 @@ export default (io) => {
             //todo: Rewrite this, duplicated game query
             try {
                 const game = await Game.findById(gameId);
-
+                let questionId;
                 if (game.currentQuestion) {
                     const question = await Question.findById(game.currentQuestion);
+                    questionId = game.currentQuestion
                     question.closed = true;
                     await question.save();
                     game.history.push(game.currentQuestion);
@@ -159,6 +160,9 @@ export default (io) => {
                 await game.save();
                 const populatedGame = await Game.findById(gameId).populate('history')
                 socket.emit("updateGame", populatedGame);
+                socket.broadcast.emit('anotherPlayerClosedQuestion', {
+                    questionId: questionId
+                });
             } catch (error) {
                 socket.emit("errorOccurred", error.message)
             }

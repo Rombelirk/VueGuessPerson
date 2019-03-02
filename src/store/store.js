@@ -194,6 +194,10 @@ const main = {
                 dispatch("addUserAlertWithTimer", { text: `${login} guessed person ${person.name}!`, type: "success" })
             });
 
+            socket.io.on("anotherPlayerClosedQuestion", ({ questionId }) => {
+                commit("removeOthersQuestion", questionId);
+            });
+
         },
 
         async submitSignup({ commit, dispatch }, { login, password }) {
