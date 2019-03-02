@@ -190,14 +190,22 @@ export default (io) => {
                     return socket.emit("finalAnswerIncorrect");
                 }
                 // todo: find out how to rebuild db structure to avoid this multiple nulling
-                const game = await Game.findOne({ user: socket.handshake.session.userId });
+                const game = await Game.findOne({ user: socket.handshake.session.userId }).populate("person");
+                const question = await Question.findById(game.currentQuestion);
+                question.closed = true;
+                await question.save();
                 game.user = null;
-                game.save();
+                await game.save();
                 user.player.currentGame = null;
                 await user.save();
 
                 socket.emit("finalAnswerCorrect");
 
+                socket.broadcast.emit('anotherPlayerAnsweredCorrectly', {
+                    login: socket.handshake.session.login,
+                    person: game.person,
+                    questionId: question._id
+                });
             } catch (error) {
                 socket.emit("errorOccurred", error.message)
             }

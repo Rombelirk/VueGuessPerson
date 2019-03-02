@@ -25,7 +25,7 @@ const game = {
 
         sendQuestion({ commit, dispatch }, question) {
             if (!question) {
-                return dispatch("addUserAlertWithTimer", {type: "error", text: "Question is not specified"})
+                return dispatch("addUserAlertWithTimer", { type: "error", text: "Question is not specified" })
             }
             socket.io.emit("newQuestion", { question })
         },
@@ -65,6 +65,13 @@ const game = {
             if (suggestions) {
                 state.suggestions = suggestions
             }
+        },
+        removeOthersQuestion(state, questionId) {
+            const index = state.questions.findIndex(question => question._id === questionId);
+            if (index === -1) {
+                return
+            }
+            state.questions.splice(index, 1);
         }
     },
     getters: {
@@ -133,11 +140,11 @@ const main = {
 
             const response = await axios.post("/upload", formData);
 
-            if (response.data.code && response.data.code !== 0) { 
-                return dispatch("addUserAlertWithTimer", { text: response.data.message, type: "error" }) 
+            if (response.data.code && response.data.code !== 0) {
+                return dispatch("addUserAlertWithTimer", { text: response.data.message, type: "error" })
             }
 
-            return dispatch("addUserAlertWithTimer", { text: response.data.message, type: "success" }) 
+            return dispatch("addUserAlertWithTimer", { text: response.data.message, type: "success" })
 
         },
         setSocketHandlers({ commit, dispatch }) {
@@ -180,7 +187,13 @@ const main = {
 
             socket.io.on("finalAnswerIncorrect", () => {
                 dispatch("addUserAlertWithTimer", { text: "Nope, try again", type: "error" })
-            })
+            });
+
+            socket.io.on("anotherPlayerAnsweredCorrectly", ({ login, person, questionId }) => {
+                commit("removeOthersQuestion", questionId);
+                dispatch("addUserAlertWithTimer", { text: `${login} guessed person ${person.name}!`, type: "success" })
+            });
+
         },
 
         async submitSignup({ commit, dispatch }, { login, password }) {
