@@ -2,7 +2,7 @@
     <div class="final-answer">
         <div class="input-container">
             <div class="title">Final answer</div>
-            <text-input :value="selectedPerson ? selectedPersonName() : ''" :change="inputChange"/>
+            <input class="text-input" type="text" v-model="personName" @input="inputChange">
 
             <div
                 v-if="suggestions.length > 0 && showSuggestions"
@@ -10,7 +10,7 @@
                 v-click-outside="closeSuggestions"
             >
                 <div
-                    @click="()=>choosePerson(suggestion._id)"
+                    @click="()=>choosePerson(suggestion._id, suggestion.name)"
                     class="suggestion"
                     :key="suggestion._id || index"
                     v-for="(suggestion, index) in suggestions"
@@ -40,7 +40,8 @@ export default {
         return {
             key: 0,
             selectedPerson: null,
-            showSuggestions: false
+            showSuggestions: false,
+            personName: ""
         };
     },
     computed: {
@@ -50,17 +51,19 @@ export default {
     },
     methods: {
         ...mapActions(["onFinalAnswerChange", "sendFinalAnswer"]),
-        inputChange(value) {
-            if (value.length >= 3) {
+        inputChange(e) {
+            this.selectedPerson = null;
+            if (e.target.value.length >= 3) {
                 this.showSuggestions = true;
-                this.onFinalAnswerChange(value);
+                this.onFinalAnswerChange(e.target.value);
             } else {
                 this.showSuggestions = false;
             }
         },
-        choosePerson(personId) {
+        choosePerson(personId, personName) {
             this.showSuggestions = false;
             this.selectedPerson = personId;
+            this.personName = personName;
         },
         selectedPersonName() {
             if (!this.selectedPerson) return "";
@@ -94,6 +97,12 @@ export default {
         flex-direction: column;
         justify-content: start;
         position: relative;
+
+        .text-input {
+            border: 1px solid gray;
+            border-radius: 3px;
+            height: 20px;
+        }
 
         .suggestions {
             position: absolute;
