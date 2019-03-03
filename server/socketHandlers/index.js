@@ -1,8 +1,8 @@
 import Game from "../models/Game";
 import Person from "../models/Person";
 import Question from "../models/Question";
-import {User} from "../models/User";
-import {getUser, getQuestions} from "./controllers";
+import { User } from "../models/User";
+import { getUser, getQuestions } from "./controllers";
 import mongoose from "mongoose";
 
 export default (io) => {
@@ -70,7 +70,8 @@ export default (io) => {
                     answeredNo: 0,
                     answeredTotal: 0,
                     answeredDontKnow: 0,
-                    whoAnswered: []
+                    whoAnswered: [],
+                    loginOfAsker: socket.handshake.session.login || ""
                 });
 
                 game.currentQuestion = question._id;
@@ -92,7 +93,8 @@ export default (io) => {
                 socket.broadcast.emit('newQuestionAsked', {
                     _id: question._id,
                     text: question.text,
-                    person: question.person
+                    person: question.person,
+                    loginOfAsker: socket.handshake.session.login
                 });
 
             } catch (error) {
@@ -171,6 +173,9 @@ export default (io) => {
 
         socket.on("changeFinalAnswer", async value => {
             try {
+                if (value.length && value.length < 3) {
+                    return;
+                }
                 const suggestedPersons = await Person.find({
                     "name": {
                         "$regex": value,
@@ -196,7 +201,9 @@ export default (io) => {
                 // todo: find out how to rebuild db structure to avoid this multiple nulling
                 const game = await Game.findOne({ user: socket.handshake.session.userId }).populate("person");
                 const question = await Question.findById(game.currentQuestion);
-                question.closed = true;
+                if (question && question.closed) {
+                    question.closed = true;
+                }
                 await question.save();
                 game.user = null;
                 await game.save();

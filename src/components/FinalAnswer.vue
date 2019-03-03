@@ -51,8 +51,12 @@ export default {
     methods: {
         ...mapActions(["onFinalAnswerChange", "sendFinalAnswer"]),
         inputChange(value) {
-            this.showSuggestions = true;
-            this.onFinalAnswerChange(value);
+            if (value.length >= 3) {
+                this.showSuggestions = true;
+                this.onFinalAnswerChange(value);
+            } else {
+                this.showSuggestions = false;
+            }
         },
         choosePerson(personId) {
             this.showSuggestions = false;
@@ -90,7 +94,7 @@ export default {
         flex-direction: column;
         justify-content: start;
         position: relative;
-     
+
         .suggestions {
             position: absolute;
             top: 60px;

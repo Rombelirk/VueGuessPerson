@@ -2,7 +2,10 @@
     <div class="questions">
         <div class="title">Other players' questions</div>
         <div class="question" :key="index" v-for="(question, index) in questions">
-            <a target="_blank" :href="question.person.wikiUrl || ''" class="name">{{question.person.name}}</a>
+            <div class="name">
+                <div class="login">{{question.loginOfAsker}}</div>
+                (<a target="_blank" :href="question.person.wikiUrl || ''">{{question.person.name}}</a>)
+            </div>
             <div class="image">
                 <img :src="`${question.person.image}`">
             </div>
@@ -46,14 +49,13 @@ export default {
     margin: 10px;
     display: flex;
     align-items: center;
-   
     flex-direction: column;
     overflow-y: auto;
     padding: $base-gutter;
     background-color: $block-background-color;
     box-shadow: $box-shadow;
     border-radius: $border-radius;
- 
+
     .question {
         display: grid;
         grid-template-columns: 160px 100px;
@@ -76,6 +78,9 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
+            .login {
+                margin-right: 10px;
+            }
         }
         .image {
             grid-area: image;
@@ -90,7 +95,7 @@ export default {
             justify-content: flex-end;
             padding-right: 10px;
             align-items: center;
-            font-size: .9em;
+            font-size: 0.9em;
             word-wrap: word-break;
             padding: 10px;
             .speech-bubble {
@@ -121,6 +126,7 @@ export default {
 
         img {
             max-height: 120px;
+            max-width: 100px;
             border-radius: 5px;
         }
         .answer {

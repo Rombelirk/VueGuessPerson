@@ -18,7 +18,8 @@ const QuestionSchema = new Schema({
     whoAnswered: [{
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }]
+    }],
+    loginOfAsker: String
 });
 
 export default model('Question', QuestionSchema);
