@@ -7,6 +7,7 @@
                 :style="{flex: flex.yes}"
                 class="answer yes"
             >Yes: {{game.currentQuestion.answeredYes}}</div>
+             <div :style="{flex: flex.dontKnow}" class="answer dontKnow">Can't say: {{game.currentQuestion.answeredDontKnow}}</div>
             <div :style="{flex: flex.no}" class="answer no">No: {{game.currentQuestion.answeredNo}}</div>
         </div>
         <base-button :click="()=>closeQuestion(game._id)">Close question</base-button>
@@ -26,16 +27,18 @@ export default {
         flex() {
             
             if (
-                this.game.currentQuestion.answeredYes + this.game.currentQuestion.answeredNo === 0
+                this.game.currentQuestion.answeredYes + this.game.currentQuestion.answeredNo + this.game.currentQuestion.answeredDontKnow === 0
             ) {
                 return {
                     yes: 1,
-                    no: 1
+                    no: 1,
+                    dontKnow: 1
                 };
             }
             return {
                 yes: this.game.currentQuestion.answeredYes,
-                no: this.game.currentQuestion.answeredNo
+                no: this.game.currentQuestion.answeredNo,
+                dontKnow: this.game.currentQuestion.answeredDontKnow
             };
         },
 
@@ -87,6 +90,10 @@ export default {
         }
         .no {
             background-color: $no-color;
+        }
+
+        .dontKnow {
+            background-color: gray;
         }
     }
 }

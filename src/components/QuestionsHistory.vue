@@ -10,6 +10,10 @@
                         class="answered-yes"
                     >Yes: {{question.answeredYes}}</div>
                     <div
+                        :style="`flex: ${question.flexDontKnow}`"
+                        class="answered-dontKnow"
+                    >Can't say: {{question.answeredDontKnow}}</div>
+                    <div
                         :style="`flex: ${question.flexNo}`"
                         class="answered-no"
                     >No: {{question.answeredNo}}</div>
@@ -74,6 +78,14 @@ export default {
                     min-width: fit-content;
                     grid-area: no;
                     background-color: $no-color;
+                    color: white;
+                }
+
+                .answered-dontKnow {
+                    padding: 0 5px;
+                    min-width: fit-content;
+                    grid-area: no;
+                    background-color: gray;
                     color: white;
                 }
             }

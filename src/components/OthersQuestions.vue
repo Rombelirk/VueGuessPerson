@@ -14,8 +14,9 @@
                 <span class="speech-bubble">{{question.text}}</span>
             </div>
             <div class="answer">
-                <base-button :click="()=>answerQuestion({id: question._id, answer: 'yes'})">Yes</base-button>
-                <base-button :click="()=>answerQuestion({id: question._id, answer: 'no'})">No</base-button>
+                <base-button class="yes" :click="()=>answerQuestion({id: question._id, answer: 'yes'})">Yes</base-button>
+                <base-button class="cant-say" :click="()=>answerQuestion({id: question._id, answer: 'dontKnow'})">Can't say</base-button>
+                <base-button class="no" :click="()=>answerQuestion({id: question._id, answer: 'no'})">No</base-button>
             </div>
         </div>
     </div>
@@ -135,9 +136,21 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
+            .yes {
+                background-color: $yes-color;
+            }
+            .no {
+                 background-color: $no-color;
+            }
+            .cant-say {
+                background-color: gray;
+                font-size: .8em;
+                padding: 8px;
+                
+            }
             & > * {
                 margin: 5px;
-                padding: 5px 25px;
+                padding: 5px 20px;
             }
         }
     }

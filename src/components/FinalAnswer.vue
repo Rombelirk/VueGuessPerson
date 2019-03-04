@@ -23,6 +23,9 @@
                 v-if="selectedPerson"
             >Send answer</base-button>
         </div>
+        <div class="resign-container">
+            <base-button :click="resignGame">Resign</base-button>
+        </div>
     </div>
 </template>
 
@@ -50,7 +53,7 @@ export default {
         })
     },
     methods: {
-        ...mapActions(["onFinalAnswerChange", "sendFinalAnswer"]),
+        ...mapActions(["onFinalAnswerChange", "sendFinalAnswer", "resignGame"]),
         inputChange(e) {
             this.selectedPerson = null;
             if (e.target.value.length >= 3) {
@@ -124,6 +127,22 @@ export default {
         margin-left: 20px;
         margin-top: 10px;
         display: flex;
+        min-width: fit-content;
+          & > * {
+           max-height: 30px;
+        }
+    }
+
+    .resign-container {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 10px;
+        & > * {
+            background-color: $no-color;
+            padding: 10 25px;
+            max-height: 30px;
+        }
     }
 }
 </style>

@@ -85,7 +85,8 @@ export default (io) => {
                 socket.emit("questionAccepted", {
                     text: question.text,
                     answeredYes: question.answeredYes,
-                    answeredNo: question.answeredNo
+                    answeredNo: question.answeredNo,
+                    answeredDontKnow: question.answeredDontKnow
                 });
 
                 await Question.populate(question, { path: "person" });
@@ -122,6 +123,8 @@ export default (io) => {
                     ++question.answeredYes
                 } else if (answer.answer === "no") {
                     ++question.answeredNo
+                } else if (answer.answer === "dontKnow") {
+                    ++question.answeredDontKnow
                 }
 
                 await question.save();
@@ -200,27 +203,69 @@ export default (io) => {
                 }
                 // todo: find out how to rebuild db structure to avoid this multiple nulling
                 const game = await Game.findOne({ user: socket.handshake.session.userId }).populate("person");
-                const question = await Question.findById(game.currentQuestion);
-                if (question && question.closed) {
-                    question.closed = true;
+                let question;
+                if (game.currentQuestion) {
+                    question = await Question.findById(game.currentQuestion);
+                    if (question) {
+                        question.closed = true;
+                    }
+                    await question.save();
                 }
-                await question.save();
+
                 game.user = null;
                 await game.save();
                 user.player.currentGame = null;
                 await user.save();
-
                 socket.emit("finalAnswerCorrect");
-
+        
                 socket.broadcast.emit('anotherPlayerAnsweredCorrectly', {
                     login: socket.handshake.session.login,
                     person: game.person,
-                    questionId: question._id
+                    questionId: question ? (question._id || null) : null,
+                    questionCount: game.history.length + (game.currentQuestion ? 1 : 0)
                 });
             } catch (error) {
                 socket.emit("errorOccurred", error.message)
             }
         });
+
+
+        socket.on("resignGame", async () => {
+            //todo: Rewrite this, duplicated game query
+            try {
+                const user = await getUser(socket.handshake.session.userId);
+                const game = await Game.findOne({ user: socket.handshake.session.userId }).populate("person");
+                let question;
+                if (game.currentQuestion) {
+                    question = await Question.findById(game.currentQuestion);
+                    if (question) {
+                        question.closed = true;
+                    }
+                    await question.save();
+                }
+
+                game.user = null;
+                await game.save();
+                user.player.currentGame = null;
+                await user.save();  
+                
+                socket.emit("gameResigned", {
+                    person: game.person
+                });
+         
+                socket.broadcast.emit("anotherPlayerResignedGame", {
+                    login: socket.handshake.session.login,
+                    person: game.person,
+                    questionId: question ? (question._id || null) : null,
+                });
+
+
+            } catch (error) {
+                socket.emit("errorOccurred", error.message)
+            }
+
+        });
+
     });
 
 }

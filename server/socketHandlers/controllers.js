@@ -1,4 +1,4 @@
-import {User} from "../models/User";
+import { User } from "../models/User";
 import Question from "../models/Question";
 
 export const getQuestions = async user => {
@@ -6,7 +6,7 @@ export const getQuestions = async user => {
     if (user.player && user.player.currentGame && user.player.currentGame._id) {
         questions = await Question
             .find({ closed: false, whoAnswered: { $nin: [user._id] } })
-            .where("game").ne(user.player.currentGame._id);
+            .where("loginOfAsker").ne(user.login);
     }
     else {
         questions = await Question.find({ closed: false, whoAnswered: { $nin: [user._id] } });
@@ -28,11 +28,11 @@ export const getUser = async userId => {
             {
                 path: 'currentQuestion',
                 model: 'Question',
-                select: ['text', 'answeredYes', 'answeredNo']
+                select: ['text', 'answeredYes', 'answeredNo', 'answeredDontKnow']
             }, {
                 path: "history",
                 model: "Question",
-                select: ['text', 'answeredYes', 'answeredNo']
+                select: ['text', 'answeredYes', 'answeredNo', 'answeredDontKnow']
             }
         ]
     });

@@ -40,6 +40,9 @@ const game = {
 
         sendFinalAnswer({ commit }, personId) {
             socket.io.emit("sendFinalAnswer", personId)
+        },
+        resignGame({ commit }) {
+            socket.io.emit("resignGame")
         }
     },
     mutations: {
@@ -89,20 +92,22 @@ const game = {
             }
 
             return state.game.history.map(question => {
-                if (question.answeredYes + question.answeredNo === 0) {
+                if (question.answeredYes + question.answeredNo + question.answeredDontKnow === 0) {
                     return {
                         ...question,
                         flexYes: 1,
-                        flexNo: 1
+                        flexNo: 1,
+                        flexDontKnow: 1
                     }
                 }
 
                 return {
                     ...question,
                     flexYes: question.answeredYes,
-                    flexNo: question.answeredNo
+                    flexNo: question.answeredNo,
+                    flexDontKnow: question.answeredDontKnow
                 }
-            })
+            }).reverse();
         }
     }
 };
@@ -119,6 +124,9 @@ const main = {
     },
     actions: {
         async submitLogin({ commit, dispatch }, { login, password }) {
+            if (login === "" || password === "") {
+                return dispatch("addUserAlertWithTimer", { text: "Login and password cannot be blank!", type: "error" })
+            }
             axios.post("/login", { login, password }).then(res => {
                 if (res.data.user) {
                     commit("setUserInfo", res.data.user);
@@ -189,22 +197,42 @@ const main = {
                 dispatch("addUserAlertWithTimer", { text: "Nope, try again", type: "error" })
             });
 
-            socket.io.on("anotherPlayerAnsweredCorrectly", ({ login, person, questionId }) => {
-                commit("removeOthersQuestion", questionId);
-                dispatch("addUserAlertWithTimer", { text: `${login} guessed person ${person.name}!`, type: "success" })
+            socket.io.on("anotherPlayerAnsweredCorrectly", ({ login, person, questionId, questionCount }) => {
+                if (questionId) {
+                    commit("removeOthersQuestion", questionId);
+                }
+                dispatch("addUserAlertWithTimer", { text: `${login} guessed person ${person.name} with ${questionCount} questions!`, type: "success" })
             });
 
             socket.io.on("anotherPlayerClosedQuestion", ({ questionId }) => {
                 commit("removeOthersQuestion", questionId);
             });
 
+            socket.io.on("gameResigned", ({ person }) => {
+                dispatch("addUserAlertWithTimer", { text: `You resigned the game! Your person was ${person.name}`, type: "success" })
+                commit("setGame", null);
+            });
+
+
+            socket.io.on("anotherPlayerResignedGame", ({ questionId, person, login }) => {
+                dispatch("addUserAlertWithTimer", { text: `${login} has resigned the game! His person was ${person.name}`, type: "success" })
+                commit("removeOthersQuestion", questionId);
+            });
+
+
         },
 
         async submitSignup({ commit, dispatch }, { login, password }) {
-            const response = await axios.post("/signup", { login, password })
+            if (login === "" || password === "") {
+                return dispatch("addUserAlertWithTimer", { text: "Login and password cannot be blank!", type: "error" })
+            }
+            const response = await axios.post("/signup", { login, password });
+
             if (response.data.code === 0) {
                 dispatch("submitLogin", { login, password });
                 dispatch("addUserAlertWithTimer", { text: "User created", type: "success" })
+            } else {
+                dispatch("addUserAlertWithTimer", { text: response.data.message, type: "error" })
             }
 
         },

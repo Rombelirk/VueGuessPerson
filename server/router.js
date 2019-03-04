@@ -29,9 +29,12 @@ router.get("/init", isAuthenticated, async (req, res) => {
 
 router.post("/signup", async(req, res) => {
     const { body: { login, password }} = req;
-    const response = await User.find({ username: login });
+    const response = await User.find({ login: login });
     if (response.length > 0) {
-        return res.send("User with such name already exists")
+        return res.send({
+            code: 1,
+            message: "User with such name already exists"
+        });
     }
 
     // todo secure passwords
